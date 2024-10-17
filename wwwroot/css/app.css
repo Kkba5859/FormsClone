@@ -1,0 +1,164 @@
+html, body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h1:focus {
+    outline: none;
+}
+
+/* Links and buttons */
+a, .btn-link {
+    color: #0071c1;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+    a:hover, .btn-link:hover {
+        color: #005a9e;
+    }
+
+/* Primary button style */
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #155fa5;
+        border-color: #134f8a;
+    }
+
+/* Focus styles for buttons, links, and inputs */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
+.form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    outline: none;
+}
+
+/* Spacing for main content */
+.content {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+/* Validation successful */
+.valid.modified:not([type=checkbox]) {
+    outline: 1px solid #26b050;
+}
+
+/* Navigation menu with smooth open/close animation */
+.nav-scrollable {
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    transform: translateX(0);
+}
+
+    .nav-scrollable.collapse {
+        transform: translateX(-100%);
+    }
+
+    .nav-scrollable.open {
+        transform: translateX(0);
+    }
+
+/* Invalid field styling */
+.invalid {
+    outline: 1px solid red;
+}
+
+/* Validation messages */
+.validation-message {
+    color: red;
+    font-size: 0.9rem;
+}
+
+/* Blazor UI error style */
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.blazor-error-boundary::after {
+    content: "An error has occurred.";
+}
+
+/* Loading progress indicator */
+.loading-progress {
+    position: relative;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    margin: 20vh auto 1rem auto;
+}
+
+    .loading-progress circle {
+        fill: none;
+        stroke: #e0e0e0;
+        stroke-width: 0.6rem;
+        transform-origin: 50% 50%;
+        transform: rotate(-90deg);
+    }
+
+        .loading-progress circle:last-child {
+            stroke: #1b6ec2;
+            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+            transition: stroke-dasharray 0.05s ease-in-out;
+        }
+
+/* Loading progress text */
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+    .loading-progress-text:after {
+        content: var(--blazor-load-percentage-text, "Loading");
+    }
+
+/* Code styling */
+code {
+    color: #c02d76;
+    font-family: Consolas, 'Courier New', Courier, monospace;
+    background-color: #f7f7f7;
+    padding: 2px 4px;
+    border-radius: 3px;
+}

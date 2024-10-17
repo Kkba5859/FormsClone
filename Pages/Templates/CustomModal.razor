@@ -1,0 +1,32 @@
+﻿@page "/custom"
+@inject ITemplatesService TemplatesService
+
+<div class="modal @(IsVisible ? "show" : "")" tabindex="-1" style="display: @(IsVisible ? "block" : "none");">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Title</h5>
+                <button type="button" class="close" @onclick="CloseModal">×</button>
+            </div>
+            <div class="modal-body">
+                @Body
+            </div>
+            <div class="modal-footer">
+                @Footer
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public RenderFragment? Title { get; set; }
+    [Parameter] public RenderFragment? Body { get; set; }
+    [Parameter] public RenderFragment? Footer { get; set; }
+
+    private async Task CloseModal()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

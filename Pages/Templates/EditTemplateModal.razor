@@ -1,0 +1,79 @@
+﻿@page "/edit-template/{Id:int?}"
+
+@using FormsClone.Models.Templates
+@inject ITemplatesService TemplatesService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="Template" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="title">Название</label>
+        <InputText id="title" class="form-control" @bind-Value="Template.Title" required />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Описание</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="Template.Description" required />
+    </div>
+
+    <div class="form-group">
+        <label for="theme">Тема</label>
+        <InputText id="theme" class="form-control" @bind-Value="Template.Theme" />
+    </div>
+
+    <div class="form-group">
+        <label for="tags">Теги</label>
+        <InputText id="tags" class="form-control" @bind-Value="TagsString" placeholder="Введите теги через запятую" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Сохранить</button>
+    <button class="btn btn-secondary" type="button" @onclick="Cancel">Отменить</button>
+</EditForm>
+
+@code {
+    [Parameter] public int Id { get; set; }  // Параметр для идентификатора шаблона
+    private Template Template { get; set; } = new Template();  // Локальная переменная для шаблона
+
+    private string TagsString { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            // Загрузка шаблона по Id, если он существует
+            Template = await TemplatesService.GetTemplateByIdAsync(Id);
+        }
+
+        // Преобразуем теги в строку
+        TagsString = Template.Tags != null ? string.Join(", ", Template.Tags) : string.Empty;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // Преобразуем строку тегов в массив
+        Template.Tags = TagsString.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                  .Select(tag => tag.Trim())
+                                  .ToArray();
+
+        // Создаем или обновляем шаблон
+        if (Template.Id == 0)
+        {
+            await TemplatesService.CreateTemplateAsync(Template);
+        }
+        else
+        {
+            await TemplatesService.UpdateTemplateAsync(Template);
+        }
+
+        // После сохранения перенаправляем на страницу со списком шаблонов
+        NavigationManager.NavigateTo("/templates");
+    }
+
+    private void Cancel()
+    {
+        // Перенаправляем на страницу со списком шаблонов при отмене
+        NavigationManager.NavigateTo("/templates");
+    }
+}

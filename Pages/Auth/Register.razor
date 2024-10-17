@@ -1,0 +1,92 @@
+﻿@page "/register"
+@using FormsClone.Models.Registration.Model
+@using FormsClone.Models.Registration.Service
+@inject IRegistrationService RegistrationService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Register</PageTitle>
+
+<h3>Register</h3>
+
+<EditForm Model="@_registerModel" OnValidSubmit="HandleRegistration">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="_registerModel.Username" />
+        <ValidationMessage For="@(() => _registerModel.Username)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="_registerModel.Email" />
+        <ValidationMessage For="@(() => _registerModel.Email)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="_registerModel.Password" />
+        <ValidationMessage For="@(() => _registerModel.Password)" />
+    </div>
+
+    <div class="mb-3 form-check">
+        <InputCheckbox id="isAdmin" @bind-Value="_registerModel.IsAdmin" class="form-check-input" />
+        <label class="form-check-label" for="isAdmin">Register as Admin</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@if (_isRegistered)
+{
+    <div class="alert alert-success">Registration successful!</div>
+}
+@if (_registrationErrors.Any())
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in _registrationErrors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    private RegisterModel _registerModel = new RegisterModel();
+    private bool _isRegistered;
+    private List<string> _registrationErrors = new List<string>();
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            _registerModel = new RegisterModel(); // Использование пустого конструктора
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+
+    private async Task HandleRegistration()
+    {
+        var registrationResult = await RegistrationService.HandleRegistration(_registerModel);
+
+        if (registrationResult.Succeeded)
+        {
+            _isRegistered = true;
+            _registrationErrors.Clear(); // Очистка ошибок
+
+            // Перенаправление на страницу входа
+            NavigationManager.NavigateTo("/login"); // Перенаправление на страницу входа
+        }
+        else
+        {
+            _isRegistered = false;
+            _registrationErrors = registrationResult.Errors.ToList(); // Преобразование в List<string>
+        }
+    }
+}

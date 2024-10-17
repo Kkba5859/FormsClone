@@ -1,0 +1,84 @@
+﻿@page "/login"
+@using FormsClone.Models.User.Model
+@using FormsClone.Models.User.Service
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>Login</h3>
+
+<EditForm Model="@_loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="_loginModel.Username" />
+        <ValidationMessage For="@(() => _loginModel.Username)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="_loginModel.Password" />
+        <ValidationMessage For="@(() => _loginModel.Password)" />
+    </div>
+
+    <div class="mb-3 form-check">
+        <InputCheckbox id="isAdmin" @bind-Value="_loginModel.IsAdmin" class="form-check-input" />
+        <label class="form-check-label" for="isAdmin">Login as Admin</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+
+@if (_loginErrors.Any())
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in _loginErrors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    private LoginModel _loginModel = new LoginModel(); // Модель для логина
+    private List<string> _loginErrors = new List<string>();
+
+    private async Task HandleLogin()
+    {
+        _loginErrors.Clear(); // Очищаем предыдущие ошибки
+
+        bool loginSuccess;
+
+        if (_loginModel.IsAdmin) // Проверка, что пользователь пытается войти как администратор
+        {
+            loginSuccess = await UserService.LoginAdminAsync(_loginModel.Username, _loginModel.Password);
+            if (loginSuccess)
+            {
+                var user = await UserService.GetCurrentUserAsync();
+                await UserService.SetLoggedInState(user);
+                NavigationManager.NavigateTo("/admin-dashboard", forceLoad: true); // Перенаправление на панель администратора с принудительным обновлением
+            }
+            else
+            {
+                _loginErrors.Add("Неверное имя пользователя или пароль для администратора.");
+            }
+        }
+        else // Логин для обычного пользователя
+        {
+            loginSuccess = await UserService.LoginUserAsync(_loginModel.Username, _loginModel.Password);
+            if (loginSuccess)
+            {
+                var user = await UserService.GetCurrentUserAsync(); // Получаем текущего пользователя через UserService
+                await UserService.SetLoggedInState(user); // Обновляем состояние логина с объектом UserModel
+                NavigationManager.NavigateTo("/", forceLoad: true); // Перенаправление на главную страницу с принудительным обновлением
+            }
+            else
+            {
+                _loginErrors.Add("Неверные данные для входа.");
+            }
+        }
+    }
+}

@@ -1,0 +1,56 @@
+﻿@page "/confirm-delete"
+@using FormsClone.Models.Templates
+@inject ITemplatesService TemplatesService
+
+<CustomModal IsVisible="@_isVisible">
+    <Title>Подтверждение удаления</Title>
+    <Body>
+    <p>Вы уверены, что хотите удалить шаблон "<strong>@Template?.Title</strong>"?</p>
+    @if (_isDeleting)
+    {
+        <p>Удаление... Пожалуйста, подождите.</p>
+    }
+    </Body>
+    <Footer>
+        <button class="btn btn-danger" @onclick="ConfirmDelete" disabled="@_isDeleting">Удалить</button>
+        <button class="btn btn-secondary" @onclick="Cancel" disabled="@_isDeleting">Отменить</button>
+    </Footer>
+</CustomModal>
+
+@code {
+    [Parameter] public Template? Template { get; set; }
+    [Parameter] public EventCallback<bool> OnConfirm { get; set; }
+
+    private bool _isVisible = true;
+    private bool _isDeleting = false; // Новая переменная для отслеживания статуса удаления
+
+    private async Task ConfirmDelete()
+    {
+        if (Template != null)
+        {
+            _isDeleting = true; // Устанавливаем статус удаления
+            try
+            {
+                await TemplatesService.DeleteTemplateAsync(Template.Id);
+                await OnConfirm.InvokeAsync(true); // Сообщаем родительскому компоненту
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                // Например, можно вывести сообщение об ошибке
+                Console.WriteLine($"Ошибка при удалении: {ex.Message}");
+                // Вы можете использовать Blazored.Toast или другой пакет для уведомлений
+            }
+            finally
+            {
+                _isVisible = false; // Закрываем модальное окно
+                _isDeleting = false; // Сбрасываем статус удаления
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        _isVisible = false; // Закрываем модальное окно
+    }
+}
