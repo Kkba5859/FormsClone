@@ -1,0 +1,22 @@
+﻿@page "/create-form"
+@using FormsClone.CSharp.MainFunctionality.Forms.Models
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@inject IEntityService<Form> FormsService
+@inject NavigationManager NavigationManager
+
+<h3>Создать Форму</h3>
+
+<input type="text" @bind="currentForm.Name" class="form-control" placeholder="Название формы" />
+<textarea @bind="currentForm.Info" class="form-control mt-2" placeholder="Описание формы"></textarea>
+
+<button class="btn btn-primary mt-3" @onclick="SaveForm">Сохранить</button>
+
+@code {
+    private Form currentForm = new Form();
+
+    private async Task SaveForm()
+    {
+        await FormsService.CreateAsync(currentForm);
+        NavigationManager.NavigateTo("/forms");
+    }
+}

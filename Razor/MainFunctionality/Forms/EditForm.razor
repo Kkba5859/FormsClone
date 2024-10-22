@@ -1,0 +1,29 @@
+﻿@page "/edit-form/{ID}"
+@using FormsClone.CSharp.MainFunctionality.Forms.Models
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@inject IEntityService<Form> FormsService
+@inject NavigationManager NavigationManager
+
+<h3>Редактировать Форму</h3>
+
+<input type="text" @bind="currentForm.Name" class="form-control" placeholder="Название формы" />
+<textarea @bind="currentForm.Info" class="form-control mt-2" placeholder="Описание формы"></textarea>
+
+<button class="btn btn-primary mt-3" @onclick="SaveForm">Сохранить</button>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+    private Form currentForm = new Form();
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentForm = await FormsService.GetByIdAsync(int.Parse(Id));
+    }
+
+    private async Task SaveForm()
+    {
+        await FormsService.UpdateAsync(currentForm);
+        NavigationManager.NavigateTo("/forms");
+    }
+}

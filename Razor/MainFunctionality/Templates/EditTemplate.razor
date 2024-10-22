@@ -1,0 +1,60 @@
+﻿@page "/edit-template/{id}"
+@using FormsClone.CSharp.MainFunctionality.Templates.Models
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@inject IEntityService<Template> TemplatesService
+@inject NavigationManager NavigationManager
+
+<h3>Редактировать Шаблон</h3>
+
+<input type="text" @bind="currentTemplate.Title" class="form-control" placeholder="Название шаблона" />
+<span class="text-danger">@titleErrorMessage</span>
+
+<textarea @bind="currentTemplate.Description" class="form-control mt-2" placeholder="Описание шаблона"></textarea>
+<span class="text-danger">@descriptionErrorMessage</span>
+
+<input type="text" @bind="currentTemplate.Theme" class="form-control mt-2" placeholder="Тематика шаблона" />
+<span class="text-danger">@themeErrorMessage</span>
+
+<input type="text" @bind="@tagsInput" class="form-control mt-2" placeholder="Теги (через запятую)" />
+<span class="text-danger">@tagsErrorMessage</span>
+
+<button class="btn btn-primary mt-3" @onclick="SaveTemplate">Сохранить</button>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+    private Template currentTemplate = new Template();
+    private string tagsInput = string.Empty;
+
+    private string? titleErrorMessage;
+    private string? descriptionErrorMessage;
+    private string? themeErrorMessage;
+    private string? tagsErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id != null)
+        {
+            currentTemplate = await TemplatesService.GetByIdAsync(int.Parse(Id));
+            tagsInput = string.Join(", ", currentTemplate.Tags);
+        }
+    }
+
+    private async Task SaveTemplate()
+    {
+        titleErrorMessage = string.IsNullOrEmpty(currentTemplate.Title) ? "Название шаблона обязательно для заполнения." : null;
+        descriptionErrorMessage = string.IsNullOrEmpty(currentTemplate.Description) ? "Описание шаблона обязательно для заполнения." : null;
+        themeErrorMessage = string.IsNullOrEmpty(currentTemplate.Theme) ? "Тематика шаблона обязательна для заполнения." : null;
+        tagsErrorMessage = string.IsNullOrEmpty(tagsInput) ? "Теги обязательны для заполнения." : null;
+
+        if (titleErrorMessage == null && descriptionErrorMessage == null && themeErrorMessage == null && tagsErrorMessage == null)
+        {
+            currentTemplate.Tags = tagsInput.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(tag => tag.Trim())
+                .ToArray();
+
+            await TemplatesService.UpdateAsync(currentTemplate);
+            NavigationManager.NavigateTo("/templates");
+        }
+    }
+}

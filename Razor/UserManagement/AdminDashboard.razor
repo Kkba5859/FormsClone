@@ -1,0 +1,139 @@
+﻿@page "/admin-dashboard"
+@using FormsClone.CSharp.UserManagement.AdminDashboard.Models
+@using FormsClone.CSharp.UserManagement.Interfaces
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3 class="text-center mb-4">Управление пользователями</h3>
+
+@if (_isLoading)
+{
+    <div class="text-center">
+        <p class="text-info">Загрузка...</p>
+    </div>
+}
+else if (_isAdmin)
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Имя пользователя</th>
+                    <th>Email</th>
+                    <th>Администратор</th>
+                    <th>Заблокирован</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in _users)
+                {
+                    <tr>
+                        <td>@user.Username</td>
+                        <td>@user.Email</td>
+                        <td>
+                            <span class="badge @(user.IsAdmin ? "bg-success" : "bg-secondary")">
+                                @(user.IsAdmin ? "Да" : "Нет")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(user.IsBlocked ? "bg-danger" : "bg-primary")">
+                                @(user.IsBlocked ? "Да" : "Нет")
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" @onclick="@(() => ToggleUserBlock(user.Username))">
+                                <span class="bi @(user.IsBlocked ? "bi-unlock" : "bi-lock")"></span>
+                                @(user.IsBlocked ? "Разблокировать" : "Заблокировать")
+                            </button>
+                            <button class="btn btn-danger btn-sm" @onclick="@(() => DeleteUser(user.Username))">
+                                <span class="bi bi-trash"></span> Удалить
+                            </button>
+                            <button class="btn btn-info btn-sm" @onclick="@(() => ToggleAdminStatus(user.Username))">
+                                <span class="bi @(user.IsAdmin ? "bi-person-dash" : "bi-person-add")"></span>
+                                @(user.IsAdmin ? "Удалить из администраторов" : "Добавить в администраторы")
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger text-center" role="alert">
+        Доступ запрещён! Вы не являетесь администратором.
+    </div>
+    <p class="text-center">Перенаправление на главную страницу через 5 секунд...</p>
+    @(_ = DelayAndRedirect())
+}
+
+
+
+@code {
+    private List<UserModel> _users = new List<UserModel>();
+    private bool _isAdmin;
+    private bool _isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isAdmin = await UserService.IsUserLoggedInAsync() && await UserService.IsUserAdminAsync();
+
+        if (!_isAdmin)
+        {
+            _isLoading = false;
+            _ = DelayAndRedirect(); // Не дожидаемся завершения
+            return; // Если не администратор, просто выйдите из метода
+        }
+
+        _users = await UserService.GetUsersAsync();
+        _isLoading = false;
+    }
+
+    private async Task DelayAndRedirect()
+    {
+        await Task.Delay(5000); // Задержка в 5 секунд
+        NavigationManager.NavigateTo("/"); // Перенаправление на главную страницу
+    }
+
+    private async Task ToggleUserBlock(string userId)
+    {
+        var user = _users.FirstOrDefault(u => u.Username == userId);
+        if (user != null)
+        {
+            if (user.IsBlocked)
+            {
+                await UserService.UnblockUserAsync(userId);
+            }
+            else
+            {
+                await UserService.BlockUserAsync(userId);
+            }
+            _users = await UserService.GetUsersAsync(); // Обновите список пользователей
+        }
+    }
+
+    private async Task DeleteUser(string userId)
+    {
+        await UserService.DeleteUserAsync(userId);
+        _users = await UserService.GetUsersAsync(); // Обновите список пользователей
+    }
+
+    private async Task ToggleAdminStatus(string userId)
+    {
+        var user = _users.FirstOrDefault(u => u.Username == userId);
+        if (user != null)
+        {
+            if (user.IsAdmin)
+            {
+                await UserService.RemoveFromAdminAsync(userId);
+            }
+            else
+            {
+                await UserService.AddToAdminAsync(userId);
+            }
+            _users = await UserService.GetUsersAsync(); // Обновите список пользователей
+        }
+    }
+}

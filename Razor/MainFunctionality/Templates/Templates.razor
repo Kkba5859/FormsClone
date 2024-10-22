@@ -1,0 +1,58 @@
+﻿@page "/templates"
+@using FormsClone.CSharp.MainFunctionality.Templates.Models
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@inject IEntityService<Template> TemplatesService
+@inject NavigationManager NavigationManager
+
+<h3>Шаблоны</h3>
+
+<button class="btn btn-primary" @onclick="CreateTemplate">Создать Шаблон</button>
+
+@if (templates != null && templates.Any())
+{
+    <ul class="list-group mt-3">
+        @foreach (var template in templates)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>@template.Title</strong>
+                    <div>Тематика: @template.Theme</div>
+                    <div>Теги: @string.Join(", ", template.Tags)</div>
+                </div>
+                <div>
+                    <button class="btn btn-warning btn-sm" @onclick="() => EditTemplate(template.ID)">Редактировать</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteTemplate(template.ID)">Удалить</button>
+                </div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Нет доступных шаблонов.</p>
+}
+
+@code {
+    private List<Template>? templates;
+
+    protected override async Task OnInitializedAsync()
+    {
+        templates = await TemplatesService.GetAllAsync();
+    }
+
+    private void CreateTemplate()
+    {
+        NavigationManager.NavigateTo("/create-template");
+    }
+
+    private void EditTemplate(string id)
+    {
+        NavigationManager.NavigateTo($"/edit-template/{id}");
+    }
+
+    private async Task DeleteTemplate(string id)
+    {
+        await TemplatesService.DeleteAsync(int.Parse(id));
+        templates = await TemplatesService.GetAllAsync();
+    }
+}
