@@ -1,10 +1,15 @@
 using Blazored.LocalStorage;
-using Blazored.Modal;
-using FormsClone.Data;
-using FormsClone.Models.Registration.Service;
-using FormsClone.Models.User.Service;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.EntityFrameworkCore;
+using FormsClone.CSharp.MainFunctionality.Templates.Services;
+using FormsClone.CSharp.UserManagement.AdminDashboard.Services;
+using FormsClone.CSharp.MainFunctionality.Questions.Services;
+using FormsClone.CSharp.MainFunctionality.Forms.Services;
+using FormsClone.CSharp.UserManagement.Interfaces;
+using FormsClone.CSharp.MainFunctionality.Interfaces;
+using FormsClone.CSharp.MainFunctionality.Forms.Models;
+using FormsClone.CSharp.MainFunctionality.Questions.Models;
+using FormsClone.CSharp.MainFunctionality.Templates.Models;
+using FormsClone.Temporary;
 
 namespace FormsClone
 {
@@ -15,26 +20,22 @@ namespace FormsClone
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            // Используем SQLite для локального хранения данных
-            var connectionString = "Data Source=FormsClone.db"; // Проверьте, что путь корректен
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(connectionString));
-
-            builder.Services.AddSingleton<AuthStateService>();
-
             // Добавление LocalStorage для локального хранения пользователей
             builder.Services.AddBlazoredLocalStorage();
 
-            builder.Services.AddBlazoredModal();
+            // Регистрация состояния авторизации
+            builder.Services.AddSingleton<AuthStateService>();
 
-            builder.Services.AddScoped<ITemplatesService, TemplatesService>();
-
-            // Регистрация объединённого сервиса для работы с пользователями (и администраторами)
+            // Регистрация сервиса для работы с пользователями (и администраторами)
             builder.Services.AddScoped<IUserService, UserService>();
 
-
-            // Регистрация модели для работы с регистрацией
+            // Регистрация сервиса для работы с регистрацией
             builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+
+            // Регистрация сервисов для работы с формами, вопросами и шаблонами через IEntityService
+            builder.Services.AddScoped<IEntityService<Form>, FormsService>();
+            builder.Services.AddScoped<IEntityService<Question>, QuestionsService>();
+            builder.Services.AddScoped<IEntityService<Template>, TemplatesService>();
 
             await builder.Build().RunAsync();
         }
