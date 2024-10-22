@@ -3,7 +3,7 @@
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
-@inject IModalService ModalService
+
 
 <div class="top-row ps-3 navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -13,11 +13,21 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                @if (IsLoggedIn) // Показываем меню "Templates" для авторизованных пользователей
+                @if (IsLoggedIn) // Показываем меню "Templates", "Questions" и "Forms" для авторизованных пользователей
                 {
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/templates">
                             <span class="bi bi-file-earmark-text"></span> Templates
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/questions">
+                            <span class="bi bi-question-circle"></span> Questions
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/forms">
+                            <span class="bi bi-file-earmark"></span> Forms
                         </NavLink>
                     </li>
                 }
@@ -62,6 +72,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="content px-4">
     @Body
