@@ -1,99 +1,109 @@
-﻿@page "/"
-@inject NavigationManager NavigationManager
+﻿    @page "/"
+    @using FormsClone.CSharp.HomePage
+    @using System.Text.Json;
+    @using FormsClone.CSharp.MainFunctionality.Forms.Models
+    @using FormsClone.CSharp.MainFunctionality.Forms.Services
+    @using FormsClone.CSharp.MainFunctionality.Questions.Models
+    @using FormsClone.CSharp.MainFunctionality.Questions.Services
+    @using FormsClone.CSharp.MainFunctionality.Templates.Models
+    @using FormsClone.CSharp.MainFunctionality.Templates.Services
+    @using FormsClone.CSharp.MainFunctionality.Interfaces
+    @using FormsClone.CSharp.UserManagement.Interfaces
+    @inject NavigationManager NavigationManager
+    @inject IJSRuntime JSRuntime
+    @inject IEntityService<Form> FormsService
+    @inject IEntityService<Template> TemplatesService
+    @inject IEntityService<Question> QuestionsService
+    @inject IHomeService HomeService
+    @inject ILoginService LoginService
 
-<style>
-    .hero-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 60vh; /* Уменьшенная высота для размещения всего контента */
-        background: linear-gradient(145deg, #f5f5f7, #e1e1e4);
-        text-align: center;
-        padding: 0.5rem; /* Уменьшенные отступы */
+    @code {
+        private List<Form> randomForms = new List<Form>();
+        private List<Template> randomTemplates = new List<Template>();
+        private List<Question> randomQuestions = new List<Question>();
+        private bool isUserLoggedIn;
+
+        protected override async Task OnInitializedAsync()
+        {
+            isUserLoggedIn = await LoginService.IsUserLoggedInAsync();
+            randomForms = await HomeService.GetAllFormsAsync();
+            randomTemplates = await HomeService.GetAllTemplatesAsync();
+            randomQuestions = await HomeService.GetAllQuestionsAsync();
+        }
+
+        private async Task EditTemplate(string id)
+        {
+            NavigationManager.NavigateTo($"/edit-template/{id}");
+        }
+
+        private async Task DeleteTemplate(string id)
+        {
+            await HomeService.DeleteTemplateAsync(id);
+            randomTemplates = await HomeService.GetAllTemplatesAsync();
+        }
+
+        private async Task EditForm(string id)
+        {
+            NavigationManager.NavigateTo($"/edit-form/{id}");
+        }
+
+        private async Task DeleteForm(string id)
+        {
+            await HomeService.DeleteFormAsync(id);
+            randomForms = await HomeService.GetAllFormsAsync(); 
+        }
+
+        private async Task EditQuestion(string id)
+        {
+            NavigationManager.NavigateTo($"/edit-question/{id}");
+        }
+
+        private async Task DeleteQuestion(string id)
+        {
+            await HomeService.DeleteQuestionAsync(id);
+            randomQuestions = await HomeService.GetAllQuestionsAsync(); 
+        }
     }
 
-    .hero-title {
-        font-size: 2.5rem; /* Уменьшенный размер шрифта */
-        font-weight: bold;
-        color: #1d1d1f;
-        margin-bottom: 0.8rem;
+    @if (isUserLoggedIn)
+    {
+        <div class="container">
+            <section class="info-section recent-forms">
+                <h3>Недавние формы</h3>
+                @foreach (var form in randomForms)
+                {
+                    <div class="form-card">
+                    <span class="black-text">@form.Name</span>
+                        <div>
+                            <button class="btn btn-warning btn-sm" @onclick="() => EditForm(form.ID)">Редактировать</button>
+                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteForm(form.ID)">Удалить</button>
+                        </div>
+                    </div>
+                }
+            </section>
+        </div>
     }
 
-    .hero-subtitle {
-        font-size: 1.2rem; /* Уменьшенный размер подзаголовка */
-        color: #6e6e73;
-        margin-bottom: 1.5rem;
-    }
+    <div class="container">
+        @if (!isUserLoggedIn)
+        {
+            <div class="hero-section">
+                <div class="hero-title">Создайте, поделитесь, проанализируйте</div>
+                <div class="hero-subtitle">Настраиваемые формы для опросов, голосований и анкет</div>
+                <div>
+                    <button class="btn-large" @onclick="@(() => NavigationManager.NavigateTo("/registration"))">Зарегистрироваться</button>
+                    <button class="btn-large btn-secondary" @onclick="@(() => NavigationManager.NavigateTo("/login"))">Войти</button>
+                </div>
+            </div>
 
-    .btn-large {
-        padding: 1.5rem 2.2rem; /* Уменьшенные кнопки */
-        font-size: 1rem;
-        border-radius: 50px;
-        border: none;
-        color: white;
-        margin: 0.5rem;
-        background-color: #0071e3;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-large:hover {
-        background-color: #005bb5;
-    }
-
-    .btn-secondary {
-        background-color: #e1e1e4;
-        color: #1d1d1f;
-    }
-
-    .btn-secondary:hover {
-        background-color: #c7c7cc;
-    }
-
-    .info-section {
-        padding: 0.5rem; /* Уменьшенные отступы */
-        text-align: center;
-    }
-
-    .info-section h4 {
-        font-size: 1.5rem; /* Уменьшенный размер заголовка */
-        margin-bottom: 0.8rem;
-        color: #1d1d1f;
-    }
-
-    .info-section p {
-        font-size: 1.2rem; /* Уменьшенный размер текста */
-        color: #6e6e73;
-        margin-bottom: 1rem;
-    }
-
-    .info-section .btn-info {
-        padding: 1rem 2rem; /* Уменьшенная кнопка */
-        font-size: 1rem;
-        border-radius: 40px;
-        border: none;
-        background-color: #34c759;
-        color: white;
-        transition: background-color 0.3s ease;
-    }
-
-    .info-section .btn-info:hover {
-        background-color: #2fa745;
-    }
-</style>
-
-<div class="hero-section">
-    <div class="hero-title">Create, Share, Analyze</div>
-    <div class="hero-subtitle">Customizable Forms for Quizzes, Polls, and Surveys</div>
-
-    <div>
-        <button class="btn-large" @onclick="@(() => NavigationManager.NavigateTo("/register"))">Sign Up</button>
-        <button class="btn-large btn-secondary" @onclick="@(() => NavigationManager.NavigateTo("/login"))">Log In</button>
+            <div class="info-section">
+                <h4>Основные функции для всех</h4>
+                <p>Даже без учетной записи вы можете искать и просматривать шаблоны в режиме только для чтения. Войдите, чтобы создать свои!</p>
+                <div>
+                <button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo("/templates"))">Шаблоны</button>
+                <button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo("/forms"))">Формы</button>
+                <button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo("/questions"))">Вопросы</button>
+                </div>
+            </div>
+        }
     </div>
-</div>
-
-<div class="info-section">
-    <h4>Basic Functionality for Everyone</h4>
-    <p>Even without an account, you can search and view templates in read-only mode. Sign in to create your own!</p>
-    <button class="btn-info" @onclick="@(() => NavigationManager.NavigateTo("/templates"))">Explore Templates</button>
-</div>

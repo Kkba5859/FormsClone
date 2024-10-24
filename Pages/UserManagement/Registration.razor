@@ -1,0 +1,79 @@
+﻿    @page "/registration"
+    @using FormsClone.CSharp.UserManagement.Interfaces
+    @using FormsClone.CSharp.UserManagement.Registration.Models
+    @inject IRegistrationService RegistrationService
+    @inject NavigationManager NavigationManager
+
+    <PageTitle>Регистрация</PageTitle>
+
+    <h3>Регистрация</h3>
+
+    <EditForm Model="@_registerModel" OnValidSubmit="HandleRegistration">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Имя пользователя</label>
+            <InputText id="username" class="form-control" @bind-Value="_registerModel.Username" />
+            <ValidationMessage For="@(() => _registerModel.Username)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Электронная почта</label>
+            <InputText id="email" class="form-control" @bind-Value="_registerModel.Email" />
+            <ValidationMessage For="@(() => _registerModel.Email)" />
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль</label>
+            <InputText id="password" type="password" class="form-control" @bind-Value="_registerModel.Password" />
+            <ValidationMessage For="@(() => _registerModel.Password)" />
+        </div>
+
+    <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Подтверждение пароля</label>
+        <InputText id="confirmPassword" type="password" class="form-control" @bind-Value="_registerModel.ConfirmPassword" />
+        <ValidationMessage For="@(() => _registerModel.ConfirmPassword)" />
+    </div>
+
+        <div class="mb-3 form-check">
+            <InputCheckbox id="isAdmin" @bind-Value="_registerModel.IsAdmin" class="form-check-input" />
+            <label class="form-check-label" for="isAdmin">Зарегистрироваться как Администратор</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </EditForm>
+
+    @if (_registerErrors.Any())
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var error in _registerErrors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @code {
+        private RegistrationModel _registerModel = new RegistrationModel();
+        private List<string> _registerErrors = new List<string>();
+
+        private async Task HandleRegistration()
+        {
+            _registerErrors.Clear();
+
+            var result = await RegistrationService.RegisterUserAsync(_registerModel, _registerModel.IsAdmin);
+            if (result.Succeeded)
+            {
+                StateHasChanged();
+                NavigationManager.NavigateTo("/login");
+            }
+            else
+            {
+                _registerErrors.AddRange(result.Errors);
+            }
+            StateHasChanged();
+        }
+    }

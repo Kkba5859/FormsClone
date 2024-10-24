@@ -1,0 +1,144 @@
+﻿@page "/admin-dashboard"
+@using Blazored.LocalStorage
+@using FormsClone.CSharp.UserManagement.Interfaces
+@using FormsClone.CSharp.UserManagement.AdminDashboard.Models
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject ILoginService LoginService
+@inject ILocalStorageService LocalStorageService
+
+<h3 class="text-center mb-4"></h3>
+
+@if (_isLoading)
+{
+    <div class="text-center">
+        <p class="text-info">Вы должны быть зарегистрированы как администратор, чтобы получить доступ к панели управления.Перенаправление на главную страницу через 5 секунд...</p>
+    </div>
+}
+else if (_isAdmin)
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Имя пользователя</th>
+                    <th>Администратор</th>
+                    <th>Заблокирован</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in _users)
+                {
+                    <tr>
+                        <td>
+                            <span class="badge @(user.Username == "admin" ?  "bg-success" : "bg-secondary")">
+                                @(user.Username)
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(user.IsAdmin ? "bg-success" : "bg-secondary")">
+                                @(user.IsAdmin ? "Да" : "Нет")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(user.IsBlocked ? "bg-danger" : "bg-primary")">
+                                @(user.IsBlocked ? "Да" : "Нет")
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" @onclick="@(() => ToggleUserBlock(user))">
+                                <span class="bi @(user.IsBlocked ? "bi-unlock" : "bi-lock")"></span>
+                                @(user.IsBlocked ? "Разблокировать" : "Заблокировать")
+                            </button>
+                            <button class="btn btn-danger btn-sm" @onclick="@(() => DeleteUser(user.Username))">
+                                <span class="bi bi-trash"></span> Удалить
+                            </button>
+                            <button class="btn btn-info btn-sm" @onclick="@(() => ToggleAdminStatus(user.Username))">
+                                <span class="bi @(user.IsAdmin ? "bi-person-dash" : "bi-person-add")"></span>
+                                @(user.IsAdmin ? "Удалить из администраторов" : "Добавить в администраторы")
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger text-center" role="alert">
+        Вы должны быть зарегистрированы как администратор, чтобы получить доступ к панели управления.
+    </div>
+    <p class="text-center">Перенаправление на главную страницу через 5 секунд...</p>
+}
+
+@code {
+    private List<UserModel> _users = new List<UserModel>();
+    private bool _isAdmin;
+    private bool _isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await LocalStorageService.GetItemAsync<UserModel>("currentUser");
+
+        if (user != null)
+        {
+            _isAdmin = user.IsAdmin;
+        }
+
+        _isLoading = false;
+
+        if (!_isAdmin)
+        {
+            await DelayAndRedirect(); 
+            return; 
+        }
+
+        _users = await UserService.GetUsersAsync();
+    }
+
+    private async Task DelayAndRedirect()
+    {
+        await Task.Delay(5000);
+        NavigationManager.NavigateTo("/");
+    }
+
+    async Task ToggleUserBlock(UserModel user)
+    {
+        if (user.IsBlocked)
+        {
+            await UserService.UnblockUserAsync(user.Username);
+            user.IsBlocked = false;
+        }
+        else
+        {
+            await UserService.BlockUserAsync(user.Username);
+            user.IsBlocked = true;
+        }
+    }
+
+    async Task DeleteUser(string userId)
+    {
+        await UserService.DeleteUserAsync(userId);
+        _users = await UserService.GetUsersAsync();
+    }
+
+    async Task ToggleAdminStatus(string userId)
+    {
+        var user = _users.FirstOrDefault(u => u.Username == userId);
+        if (user != null)
+        {
+            if (user.IsAdmin)
+            {
+                await UserService.RemoveFromAdminAsync(userId);
+            }
+            else
+            {
+                await UserService.AddToAdminAsync(userId);
+            }
+            _users = await UserService.GetUsersAsync();
+        }
+    }
+
+}

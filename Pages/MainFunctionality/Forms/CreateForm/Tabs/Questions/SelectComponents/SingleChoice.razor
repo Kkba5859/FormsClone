@@ -1,0 +1,49 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@inject ITabService TabService
+@code {
+    [Parameter]
+    public string FieldLabel { get; set; } = "Один из списка";
+
+    [Parameter]
+    public List<string> Options { get; set; } = new List<string>();
+
+    [Parameter]
+    public EventCallback<List<string>> OptionsChanged { get; set; }
+
+    private void AddOption()
+    {
+        if (Options.Count < 50)
+        {
+            Options.Add("");
+            OptionsChanged.InvokeAsync(Options);
+        }
+    }
+
+    private void RemoveOption(int index)
+    {
+        if (Options.Count > 2)
+        {
+            Options.RemoveAt(index);
+            OptionsChanged.InvokeAsync(Options);
+        }
+    }
+
+    private void OnOptionChanged(ChangeEventArgs e, int index)
+    {
+        Options[index] = e.Value.ToString();
+        OptionsChanged.InvokeAsync(Options);
+    }
+}
+
+<div class="form-group">
+    <label>@FieldLabel</label>
+    @for (int i = 0; i < Options.Count; i++)
+    {
+        <div class="input-group mb-2">
+            <input type="text" class="form-control" @bind="Options[i]" @oninput="(e) => OnOptionChanged(e, i)" />
+            <button class="btn btn-danger" @onclick="() => RemoveOption(i)">Удалить</button>
+        </div>
+    }
+    <button class="btn btn-primary" @onclick="AddOption">Добавить вариант</button>
+</div>

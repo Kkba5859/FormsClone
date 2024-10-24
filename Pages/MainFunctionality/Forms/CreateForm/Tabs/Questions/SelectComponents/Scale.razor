@@ -1,0 +1,39 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@using Microsoft.AspNetCore.Components
+@inject ITabService TabService
+@code {
+    [Parameter]
+    public string FieldLabel { get; set; } = "Шкала";
+
+    [Parameter]
+    public int SelectedMin { get; set; }
+
+    [Parameter]
+    public int SelectedMax { get; set; }
+
+    private void OnMinChanged(ChangeEventArgs e)
+    {
+        SelectedMin = Convert.ToInt32(e.Value);
+    }
+
+    private void OnMaxChanged(ChangeEventArgs e)
+    {
+        SelectedMax = Convert.ToInt32(e.Value);
+    }
+}
+
+<div class="form-group">
+    <label>@FieldLabel</label>
+    <input type="text" class="form-control" placeholder="Описание шкалы" />
+    <select @onchange="OnMinChanged" value="@SelectedMin">
+        <option value="0">0</option>
+        <option value="1">1</option>
+    </select>
+    <select @onchange="OnMaxChanged" value="@SelectedMax">
+        @for (int i = 2; i <= 10; i++)
+        {
+            <option value="@i">@i</option>
+        }
+    </select>
+</div>

@@ -1,0 +1,34 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+
+@inject ITabService TabService
+@code {
+    [Parameter]
+    public string SelectedOption { get; set; } = "Один из списка"; 
+    [Parameter]
+    public EventCallback<string> SelectedOptionChanged { get; set; }
+
+    private List<string> options = new List<string>
+    {
+        "Текст",
+        "Один из списка",
+        "Несколько из списка",
+        "Шкала"
+    };
+
+    private void OnOptionSelected(ChangeEventArgs e)
+    {
+        SelectedOption = e.Value.ToString();
+        SelectedOptionChanged.InvokeAsync(SelectedOption);
+    }
+}
+
+<h4>Вопросы</h4>
+<select class="form-control mt-2" @bind="SelectedOption" @bind:event="onchange">
+    @foreach (var option in options)
+    {
+        <option value="@option">@option</option>
+    }
+</select>

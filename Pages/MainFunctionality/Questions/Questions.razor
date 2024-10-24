@@ -1,0 +1,75 @@
+﻿@page "/questions"
+@using FormsClone.CSharp.MainFunctionality.Questions.Models
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@using FormsClone.CSharp.UserManagement.Interfaces
+@inject IEntityService<Question> QuestionsService
+@inject NavigationManager NavigationManager
+@inject ILoginService LoginService
+
+<div class="alert alert-info">
+    Сервис находится в разработке. Новые функции скоро будут доступны.
+</div>
+
+<h3>Вопросы</h3>
+
+@if (isUserLoggedIn)
+{
+    <button class="btn btn-primary" @onclick="CreateQuestion">Создать Вопрос</button>
+}
+@if (questions != null && questions.Any())
+{
+    <ul class="list-group mt-3">
+        @foreach (var question in questions)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Текст:</strong> @question.Text<br />
+                    <strong>Информация:</strong> @question.Info<br />
+                    <strong>Тип:</strong> @question.Type
+                </div>
+                <div>
+                    @if (isUserLoggedIn)
+                    {
+                        <button class="btn btn-warning btn-sm" @onclick="() => EditQuestion(question.ID)">Редактировать</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteQuestion(question.ID)">Удалить</button>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Войдите, чтобы редактировать или удалять шаблоны.</span>
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>Нет доступных вопросов.</p>
+}
+
+@code {
+    private List<Question>? questions;
+    private bool isUserLoggedIn;
+
+    protected override async Task OnInitializedAsync()
+    {
+        questions = await QuestionsService.GetAllAsync();
+        isUserLoggedIn = await LoginService.IsUserLoggedInAsync();
+    }
+
+    private void CreateQuestion()
+    {
+        NavigationManager.NavigateTo("/create-question");
+    }
+
+    private void EditQuestion(string id)
+    {
+        NavigationManager.NavigateTo($"/edit-question/{id}");
+    }
+
+    private async Task DeleteQuestion(string id)
+    {
+        await QuestionsService.DeleteAsync(int.Parse(id));
+        questions = await QuestionsService.GetAllAsync();
+    }
+}

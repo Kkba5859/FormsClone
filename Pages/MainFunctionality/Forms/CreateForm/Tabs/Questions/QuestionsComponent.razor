@@ -1,0 +1,63 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Components
+@using FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+
+@inject ITabService TabService
+@code {
+    [Parameter]
+    public EventCallback<string> OnQuestionsChanged { get; set; }
+
+    private int minValue = 0; 
+    private int maxValue = 2; 
+    private string question = ""; 
+    private List<string> options = new List<string> { "Вариант 1" }; 
+    private bool isRequired = false; 
+    private string selectedOption = "Один из списка"; 
+
+    private void AddOption()
+    {
+        if (options.Count < 50) 
+        {
+            options.Add($"Вариант {options.Count + 1}");
+        }
+    }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        question = e.Value.ToString();
+        OnQuestionsChanged.InvokeAsync(question);
+    }
+
+    private void ToggleRequired(ChangeEventArgs e)
+    {
+        isRequired = !isRequired;
+    }
+
+    private void OnSelectedOptionChanged(string newOption)
+    {
+        selectedOption = newOption;
+    }
+}
+
+
+<SelectComponent @bind-SelectedOption="selectedOption" />
+
+@if (selectedOption == "Текст")
+{
+    <TextField FieldLabel="Текст" @bind-TextValue="question" />
+}
+else if (selectedOption == "Один из списка")
+{
+    <SingleChoice FieldLabel="Один из списка" @bind-Options="options" />
+}
+else if (selectedOption == "Несколько из списка")
+{
+    <MultipleChoice FieldLabel="Несколько из списка" @bind-Options="options" />
+}
+else if (selectedOption == "Шкала")
+{
+    <Scale FieldLabel="Минимальное значение" SelectedMin="@minValue" />
+    <Scale FieldLabel="Максимальное значение" SelectedMax="@maxValue" />
+}

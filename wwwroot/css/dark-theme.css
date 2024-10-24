@@ -1,0 +1,61 @@
+﻿/* Темная тема */
+body {
+    background-color: #343a40; /* Цвет фона */
+    color: #ffffff; /* Цвет текста */
+}
+
+.navbar {
+    background-color: #212529; /* Цвет фона навигационной панели */
+    border-bottom: 1px solid #454d55; /* Нижняя граница */
+}
+
+.nav-link {
+    color: #ffffff; /* Цвет ссылок */
+}
+
+    .nav-link:hover {
+        color: #61dafb; /* Цвет ссылок при наведении */
+        text-decoration: underline; /* Подчеркивание при наведении для лучшей видимости */
+    }
+
+.button {
+    background-color: #007bff; /* Цвет кнопок */
+    color: #ffffff; /* Цвет текста кнопок */
+    border: none; /* Убираем рамку */
+    border-radius: 4px; /* Закругленные углы */
+}
+
+    .button:hover {
+        background-color: #0056b3; /* Цвет кнопок при наведении */
+    }
+
+.sidebar {
+    background-color: #495057; /* Цвет боковой панели */
+}
+
+.card {
+    background-color: #495057; /* Цвет фона карточек */
+    border: 1px solid #6c757d; /* Цвет границы карточек */
+    border-radius: 8px; /* Закругленные углы */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень для карточек */
+}
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Настроим элементы навигации для широких экранов */
+@media (min-width: 1024px) {
+    .nav-scrollable {
+        width: 300px; /* Расширим меню на больших экранах */
+    }
+}

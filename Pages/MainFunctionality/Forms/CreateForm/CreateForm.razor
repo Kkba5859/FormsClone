@@ -1,0 +1,47 @@
+﻿@page "/create-form"
+@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm
+@using Microsoft.AspNetCore.Components
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@using FormsClone.CSharp.MainFunctionality.Forms.Models
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Answers
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Settings
+@inject IEntityService<Form> FormsService
+@inject NavigationManager NavigationManager
+@inject ITabService TabService
+
+<h3 class="my-3">Создать Форму</h3>
+
+<div class="btn-group mb-3" role="group">
+    <button class="btn btn-outline-primary" @onclick='() => SetActiveTab("Questions")'>Вопросы</button>
+    <button class="btn btn-outline-primary" @onclick='() => SetActiveTab("Answers")'>Ответы</button>
+    <button class="btn btn-outline-primary" @onclick='() => SetActiveTab("Settings")'>Настройки</button>
+</div>
+
+<div>
+    @if (TabService.ActiveTab == "Questions")
+    {
+        <QuestionsComponent />
+    }
+    else if (TabService.ActiveTab == "Answers")
+    {
+        <AnswersComponent />
+    }
+    else if (TabService.ActiveTab == "Settings")
+    {
+        <SettingsComponent />
+    }
+</div>
+
+@code {
+    private void SetActiveTab(string tab)
+    {
+        TabService.SetActiveTab(tab);
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        TabService.SetActiveTab(TabService.ActiveTab ?? "Questions");
+    }
+}

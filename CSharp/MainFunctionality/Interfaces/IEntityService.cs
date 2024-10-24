@@ -7,6 +7,6 @@
         Task<T> GetByIdAsync(int id);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
+        Task<List<T>> SearchAsync(string searchTerm); 
     }
-
 }

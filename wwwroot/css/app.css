@@ -1,243 +1,309 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #333;
-    margin: 0;
-    padding: 0;
+    font-size: 16px; /* Общий размер шрифта */
+    line-height: 1.6; /* Межстрочный интервал */
+    color: #333; /* Цвет текста */
+    margin: 0; /* Убираем отступы */
+    padding: 0; /* Убираем отступы */
 }
 
-/* Headings */
+/* Заголовки */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    margin: 0 0 1rem 0;
+    font-weight: 600; /* Полужирный шрифт */
+    margin: 0 0 1rem 0; /* Отступы снизу */
 }
 
 h1 {
-    font-size: 2.5rem;
+    font-size: 2.5rem; /* Размер заголовка h1 */
 }
 
 h2 {
-    font-size: 2rem;
+    font-size: 2rem; /* Размер заголовка h2 */
 }
 
 h1:focus {
-    outline: none;
+    outline: none; /* Убираем обводку при фокусе */
 }
 
-/* Links and buttons */
+/* Ссылки и кнопки */
 a, .btn-link {
-    color: #0071c1;
-    text-decoration: none;
-    transition: color 0.3s ease;
+    color: #0071c1; /* Цвет ссылки */
+    text-decoration: none; /* Убираем подчеркивание */
+    transition: color 0.3s ease; /* Плавный переход цвета */
 }
 
     a:hover, .btn-link:hover {
-        color: #005a9e;
+        color: #005a9e; /* Цвет при наведении */
     }
 
-/* Primary button style */
+/* Стиль основной кнопки */
 .btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    color: #fff; /* Цвет текста */
+    background-color: #1b6ec2; /* Цвет фона */
+    border-color: #1861ac; /* Цвет рамки */
+    padding: 10px 20px; /* Отступы */
+    border-radius: 5px; /* Закругленные углы */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Плавные переходы */
 }
 
     .btn-primary:hover {
-        background-color: #155fa5;
-        border-color: #134f8a;
+        background-color: #155fa5; /* Цвет фона при наведении */
+        border-color: #134f8a; /* Цвет рамки при наведении */
     }
 
-/* Focus styles for buttons, links, and inputs */
+/* Стили фокуса для кнопок, ссылок и инпутов */
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
 .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-    outline: none;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb; /* Тень при фокусе */
+    outline: none; /* Убираем обводку при фокусе */
 }
 
-/* Spacing for main content */
+/* Отступы для основного контента */
 .content {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
+    padding-top: 1.5rem; /* Отступ сверху */
+    padding-bottom: 1.5rem; /* Отступ снизу */
 }
 
-/* Validation successful */
+/* Стили успешной валидации */
 .valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+    outline: 1px solid #26b050; /* Обводка для валидных полей */
 }
 
-/* Navigation menu with smooth open/close animation */
+/* Навигационное меню с анимацией открытия/закрытия */
 .nav-scrollable {
-    transition: transform 0.3s ease;
-    overflow: hidden;
-    transform: translateX(0);
+    transition: transform 0.3s ease; /* Плавный переход */
+    overflow: hidden; /* Скрываем переполнение */
+    transform: translateX(0); /* Начальная позиция */
 }
 
     .nav-scrollable.collapse {
-        transform: translateX(-100%);
+        transform: translateX(-100%); /* Скрываем меню */
     }
 
     .nav-scrollable.open {
-        transform: translateX(0);
+        transform: translateX(0); /* Показываем меню */
     }
 
-/* Invalid field styling */
+/* Стили для некорректных полей */
 .invalid {
-    outline: 1px solid red;
+    outline: 1px solid red; /* Обводка для некорректных полей */
 }
 
-/* Validation messages */
+/* Сообщения валидации */
 .validation-message {
-    color: red;
-    font-size: 0.9rem;
+    color: red; /* Цвет текста сообщений */
+    font-size: 0.9rem; /* Размер текста сообщений */
 }
 
-/* Blazor UI error style */
+/* Ошибки Blazor UI */
 #blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
+    background: lightyellow; /* Цвет фона */
+    bottom: 0; /* Позиция снизу */
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2); /* Тень */
+    display: none; /* По умолчанию скрыто */
+    left: 0; /* Позиция слева */
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem; /* Отступы */
+    position: fixed; /* Фиксированная позиция */
+    width: 100%; /* Ширина на весь экран */
+    z-index: 1000; /* На переднем плане */
 }
 
     #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
+        cursor: pointer; /* Курсор указателя */
+        position: absolute; /* Абсолютная позиция */
+        right: 0.75rem; /* Позиция справа */
+        top: 0.5rem; /* Позиция сверху */
     }
 
 .blazor-error-boundary::after {
-    content: "An error has occurred.";
+    content: "An error has occurred."; /* Текст ошибки */
 }
 
-/* Loading progress indicator */
+/* Индикатор загрузки */
 .loading-progress {
-    position: relative;
-    display: block;
-    width: 8rem;
-    height: 8rem;
-    margin: 20vh auto 1rem auto;
+    position: relative; /* Позиция относительно родителя */
+    display: block; /* Блочный элемент */
+    width: 8rem; /* Ширина */
+    height: 8rem; /* Высота */
+    margin: 20vh auto 1rem auto; /* Отступы */
 }
 
     .loading-progress circle {
-        fill: none;
-        stroke: #e0e0e0;
-        stroke-width: 0.6rem;
-        transform-origin: 50% 50%;
-        transform: rotate(-90deg);
+        fill: none; /* Без заполнения */
+        stroke: #e0e0e0; /* Цвет обводки */
+        stroke-width: 0.6rem; /* Ширина обводки */
+        transform-origin: 50% 50%; /* Центрирование вращения */
+        transform: rotate(-90deg); /* Вращение */
     }
 
         .loading-progress circle:last-child {
-            stroke: #1b6ec2;
-            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
-            transition: stroke-dasharray 0.05s ease-in-out;
+            stroke: #1b6ec2; /* Цвет обводки для последнего элемента */
+            stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%; /* Для анимации загрузки */
+            transition: stroke-dasharray 0.05s ease-in-out; /* Плавный переход */
         }
 
-/* Loading progress text */
+/* Текст загрузки */
 .loading-progress-text {
-    position: absolute;
-    text-align: center;
-    font-weight: bold;
-    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+    position: absolute; /* Абсолютная позиция */
+    text-align: center; /* Центрирование текста */
+    font-weight: bold; /* Жирный шрифт */
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem; /* Позиция текста */
 }
 
     .loading-progress-text:after {
-        content: var(--blazor-load-percentage-text, "Loading");
+        content: var(--blazor-load-percentage-text, "Loading"); /* Текст загрузки */
     }
 
-/* Code styling */
+/* Стили для кода */
 code {
-    color: #c02d76;
-    font-family: Consolas, 'Courier New', Courier, monospace;
-    background-color: #f7f7f7;
-    padding: 2px 4px;
-    border-radius: 3px;
+    color: #c02d76; /* Цвет текста кода */
+    font-family: Consolas, 'Courier New', Courier, monospace; /* Шрифт для кода */
+    background-color: #f7f7f7; /* Цвет фона для кода */
+    padding: 2px 4px; /* Отступы */
+    border-radius: 3px; /* Закругленные углы */
 }
 
-.hero-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 60vh; /* Уменьшенная высота для размещения всего контента */
-    background: linear-gradient(145deg, #f5f5f7, #e1e1e4);
-    text-align: center;
+/* Стили для секции героя */
+.hero-section, .info-section {
+    display: flex; /* Используем flexbox */
+    flex-direction: column; /* Вертикальное выравнивание */
+    align-items: center; /* Центрируем по горизонтали */
+    justify-content: center; /* Центрируем по вертикали */
+    min-height: 60vh; /* Минимальная высота */
+    background: linear-gradient(145deg, #f5f5f7, #e1e1e4); /* Градиентный фон */
+    text-align: center; /* Центрируем текст */
     padding: 0.5rem; /* Уменьшенные отступы */
+    opacity: 0.9; /* Добавляем прозрачность */
 }
+
+
 
 .hero-title {
-    font-size: 2.5rem; /* Уменьшенный размер шрифта */
-    font-weight: bold;
-    color: #1d1d1f;
-    margin-bottom: 0.8rem;
+    font-size: 2.5rem; /* Размер заголовка героя */
+    font-weight: bold; /* Жирный шрифт */
+    color: #1d1d1f; /* Цвет текста */
+    margin-bottom: 0.8rem; /* Отступ снизу */
 }
 
 .hero-subtitle {
-    font-size: 1.2rem; /* Уменьшенный размер подзаголовка */
-    color: #6e6e73;
-    margin-bottom: 1.5rem;
+    font-size: 1.2rem; /* Размер подзаголовка */
+    color: #6e6e73; /* Цвет текста подзаголовка */
+    margin-bottom: 1.5rem; /* Отступ снизу */
 }
 
 .btn-large {
     padding: 1.5rem 2.2rem; /* Уменьшенные кнопки */
-    font-size: 1rem;
-    border-radius: 50px;
-    border: none;
-    color: white;
-    margin: 0.5rem;
-    background-color: #0071e3;
-    transition: background-color 0.3s ease;
+    font-size: 1rem; /* Размер текста кнопки */
+    border-radius: 50px; /* Закругленные углы */
+    border: none; /* Убираем рамку */
+    color: white; /* Цвет текста */
+    margin: 0.5rem; /* Отступы */
+    background-color: #0071e3; /* Цвет фона кнопки */
+    transition: background-color 0.3s ease; /* Плавный переход */
 }
 
-.btn-large:hover {
-        background-color: #005bb5;
-}
+    .btn-large:hover {
+        background-color: #005bb5; /* Цвет фона при наведении */
+    }
 
 .btn-secondary {
-    background-color: #e1e1e4;
-    color: #1d1d1f;
+    background-color: #e1e1e4; /* Цвет фона вторичной кнопки */
+    color: #1d1d1f; /* Цвет текста */
 }
 
-.btn-secondary:hover {
-        background-color: #c7c7cc;
-}
-
-.info-section {
-    padding: 0.5rem; /* Уменьшенные отступы */
-    text-align: center;
-}
-
-.info-section h4 {
-        font-size: 1.5rem; /* Уменьшенный размер заголовка */
-        margin-bottom: 0.8rem;
-        color: #1d1d1f;
-}
-
-    .info-section p {
-        font-size: 1.2rem; /* Уменьшенный размер текста */
-        color: #6e6e73;
-        margin-bottom: 1rem;
+    .btn-secondary:hover {
+        background-color: #d1d1d1; /* Цвет фона при наведении */
     }
 
-    .info-section .btn-info {
-        padding: 1rem 2rem; /* Уменьшенная кнопка */
-        font-size: 1rem;
-        border-radius: 40px;
-        border: none;
-        background-color: #34c759;
-        color: white;
-        transition: background-color 0.3s ease;
+/* Стили для карточек */
+.card {
+    border: 1px solid #ddd; /* Цвет рамки карточки */
+    border-radius: 8px; /* Закругленные углы */
+    margin-bottom: 1rem; /* Отступ снизу */
+    transition: transform 0.2s; /* Плавный переход */
+}
+
+    .card:hover {
+        transform: translateY(-5px); /* Эффект поднятия при наведении */
     }
 
-        .info-section .btn-info:hover {
-            background-color: #2fa745;
-        }
+.card-header {
+    background-color: #f7f7f7; /* Цвет фона заголовка карточки */
+    font-size: 1.1rem; /* Размер шрифта заголовка */
+    font-weight: 500; /* Полужирный шрифт */
+    border-bottom: 1px solid #ddd; /* Цвет рамки снизу */
+    padding: 10px; /* Отступы */
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 40vh; /* Уменьшаем высоту секции для мобильных */
+    }
+
+    .hero-title {
+        font-size: 2rem; /* Уменьшаем размер заголовка */
+    }
+
+    .hero-subtitle {
+        font-size: 1rem; /* Уменьшаем размер подзаголовка */
+    }
+
+    .btn-large {
+        padding: 1rem 1.5rem; /* Уменьшаем отступы кнопки */
+        font-size: 0.9rem; /* Уменьшаем размер текста кнопки */
+    }
+    /* Фиксированный стиль для таблицы */
+.table {
+    background-color: #ffffff; /* Цвет фона таблицы для светлой темы */
+    border: 1px solid #d6d6d6; /* Цвет границы таблицы для светлой темы */
+}
+
+.table-dark {
+    background-color: #495057; /* Цвет фона таблицы для темной темы */
+    border: 1px solid #6c757d; /* Цвет границы таблицы для темной темы */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2; /* Цвет фона для нечетных строк в светлой теме */
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #ffffff; /* Цвет фона для четных строк в светлой теме */
+}
+
+.table-dark tbody tr:nth-of-type(odd) {
+    background-color: #6c757d; /* Цвет фона для нечетных строк в темной теме */
+}
+
+.table-dark tbody tr:nth-of-type(even) {
+    background-color: #495057; /* Цвет фона для четных строк в темной теме */
+}
+
+/* Стили для ячеек */
+td, th {
+    padding: 8px; /* Отступы для ячеек */
+    border: 1px solid #d6d6d6; /* Цвет границы ячеек */
+}
+
+}
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Настроим элементы навигации для широких экранов */
+@media (min-width: 1024px) {
+    .nav-scrollable {
+        width: 300px; /* Расширим меню на больших экранах */
+    }
+}

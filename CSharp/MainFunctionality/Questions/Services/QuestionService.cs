@@ -11,5 +11,13 @@ namespace FormsClone.CSharp.MainFunctionality.Questions.Services
         public QuestionsService(ILocalStorageService localStorage) : base(localStorage)
         {
         }
+
+        public override async Task<List<Question>> SearchAsync(string searchTerm)
+        {
+            var allQuestions = await GetAllAsync();
+            return allQuestions.Where(q =>
+                q.Text.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) 
+                ).ToList();
+        }
     }
 }

@@ -4,6 +4,18 @@
     flex-direction: column;
 }
 
+.sidebar ::deep .nav-link {
+    color: #ffffff;
+    padding: 10px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+    .sidebar ::deep .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.2); /* Прозрачный белый фон при наведении */
+    }
+
+
 main {
     flex: 1;
 }
@@ -73,5 +85,25 @@ main {
     .top-row, article {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
+    }
+}
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Настроим элементы навигации для широких экранов */
+@media (min-width: 1024px) {
+    .nav-scrollable {
+        width: 300px; /* Расширим меню на больших экранах */
     }
 }

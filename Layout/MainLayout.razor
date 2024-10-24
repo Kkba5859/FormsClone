@@ -1,115 +1,136 @@
-﻿@using Blazored.Modal.Services
-@using FormsClone.Models.User.Service
+﻿@using FormsClone.CSharp.UserManagement.Interfaces
+
 @inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
-
+@inject ILoginService LoginService
+@inject IJSRuntime JSRuntime 
 
 <div class="top-row ps-3 navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">FormsClone</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключить навигацию">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                @if (IsLoggedIn) // Показываем меню "Templates", "Questions" и "Forms" для авторизованных пользователей
+                @if (IsLoggedIn)
                 {
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/templates">
-                            <span class="bi bi-file-earmark-text"></span> Templates
+                            <span class="bi bi-file-earmark-text"></span> Шаблоны
                         </NavLink>
                     </li>
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/questions">
-                            <span class="bi bi-question-circle"></span> Questions
+                            <span class="bi bi-question-circle"></span> Вопросы
                         </NavLink>
                     </li>
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/forms">
-                            <span class="bi bi-file-earmark"></span> Forms
+                            <span class="bi bi-file-earmark"></span> Формы
                         </NavLink>
                     </li>
                 }
             </ul>
 
             <ul class="navbar-nav ms-auto d-flex align-items-center">
-                @if (IsLoggedIn) // Если пользователь авторизован
+                @if (IsLoggedIn)
                 {
                     <li class="nav-item me-3">
                         <span class="navbar-text text-light">Привет, @UserName</span>
                     </li>
 
-                    @if (IsAdmin) // Кнопка "Dashboard" для администраторов
+                    @if (IsAdmin)
                     {
                         <li class="nav-item">
                             <NavLink class="nav-link" href="/admin-dashboard">
-                                <span class="bi bi-speedometer2"></span> Dashboard
+                                <span class="bi bi-speedometer2"></span> Панель управления
                             </NavLink>
                         </li>
                     }
 
                     <li class="nav-item">
                         <button class="btn btn-danger nav-link" @onclick="Logout">
-                            <span class="bi bi-box-arrow-right"></span> Logout
+                            <span class="bi bi-box-arrow-right"></span> Выйти
                         </button>
                     </li>
                 }
-                else // Если пользователь не авторизован
+                else
                 {
                     <li class="nav-item">
                         <NavLink class="nav-link" href="/login">
-                            <span class="bi bi-box-arrow-in-right"></span> Login
+                            <span class="bi bi-box-arrow-in-right"></span> Войти
                         </NavLink>
                     </li>
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="/register">
-                            <span class="bi bi-person-plus-fill"></span> Sign Up
+                        <NavLink class="nav-link" href="/registration">
+                            <span class="bi bi-person-plus-fill"></span> Зарегистрироваться
                         </NavLink>
                     </li>
                 }
+
+                <li class="nav-item">
+                    <button id="theme-toggle-button" class="btn btn-dark nav-link" @onclick="ToggleTheme">
+                        Переключить тему
+                    </button>
+
+                </li>
             </ul>
         </div>
     </div>
 </div>
-
 
 <div class="content px-4">
     @Body
 </div>
 
 @code {
-    protected bool IsLoggedIn; // Состояние для проверки, залогинен ли пользователь
-    protected bool IsAdmin; // Состояние для проверки, является ли пользователь администратором
-    protected string UserName = string.Empty; // Имя текущего пользователя
+    protected bool IsLoggedIn;
+    protected bool IsAdmin;
+    protected string UserName = string.Empty;
+    private bool isDarkTheme;
 
     protected override async Task OnInitializedAsync()
     {
-        await UpdateUserStatusAsync(); // Обновляем статус пользователя при инициализации
+        await UpdateUserStatusAsync();
     }
 
     private async Task UpdateUserStatusAsync()
     {
-        IsLoggedIn = await UserService.IsUserLoggedInAsync(); // Проверяем, авторизован ли пользователь
+        IsLoggedIn = await LoginService.IsUserLoggedInAsync();
 
         if (IsLoggedIn)
         {
-            IsAdmin = await UserService.IsUserAdminAsync(); // Проверяем, является ли пользователь администратором
-            UserName = await UserService.GetUserNameAsync(); // Получаем имя пользователя
+            IsAdmin = true; 
+            UserName = await UserService.GetUserNameAsync();
         }
         else
         {
-            IsAdmin = false; // Сбрасываем статус администратора
-            UserName = string.Empty; // Очищаем имя, если пользователь не авторизован
+            IsAdmin = false;
+            UserName = string.Empty;
         }
 
-        StateHasChanged(); // Обновляем состояние для правильного отображения элементов
+        StateHasChanged();
+    }
+    private async Task SetInitialThemeAsync()
+    {
+        var preferredTheme = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "theme") ?? "light";
+        isDarkTheme = preferredTheme == "dark";
+        await JSRuntime.InvokeVoidAsync("toggleTheme", isDarkTheme); 
     }
 
     private async Task Logout()
     {
-        await UserService.LogoutUserAsync(); // Логаут пользователя
-        await UpdateUserStatusAsync(); // Обновляем статус после выхода
-        NavigationManager.NavigateTo("/"); // Перенаправляем на главную страницу
+        await LoginService.LogoutUserAsync();
+        await UpdateUserStatusAsync();
+        NavigationManager.NavigateTo("/", true);
+    }
+
+    private async Task ToggleTheme()
+    {
+        isDarkTheme = !isDarkTheme;
+        await JSRuntime.InvokeVoidAsync("toggleTheme", isDarkTheme); 
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "theme", isDarkTheme ? "dark" : "light"); 
     }
 }

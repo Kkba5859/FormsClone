@@ -1,0 +1,18 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Answers
+@using Microsoft.AspNetCore.Components
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnAnswersChanged { get; set; }
+
+    private string answers;
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        answers = e.Value.ToString();
+        OnAnswersChanged.InvokeAsync(answers);
+    }
+}
+
+<h4>Ответы</h4>
+<textarea @bind="answers" class="form-control mt-2" placeholder="Введите ответы..." @oninput="HandleInput"></textarea>

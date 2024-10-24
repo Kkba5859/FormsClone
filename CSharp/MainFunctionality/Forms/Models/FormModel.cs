@@ -7,8 +7,8 @@ namespace FormsClone.CSharp.MainFunctionality.Forms.Models
     public class Form : BaseEntityModel, IEntityModel
     {
         [Required(ErrorMessage = "Название формы обязательно для заполнения.")]
-        public string? Name { get; set; } // Название формы
+        public string? Name { get; set; } 
 
-        public string? Info { get; set; } // Описание формы
+        public string? Info { get; set; } 
     }
 }

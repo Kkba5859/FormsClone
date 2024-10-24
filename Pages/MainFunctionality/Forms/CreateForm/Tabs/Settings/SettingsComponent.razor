@@ -1,0 +1,17 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Settings
+@using Microsoft.AspNetCore.Components
+@code {
+    [Parameter]
+    public EventCallback<string> OnSettingsChanged { get; set; }
+
+    private string settings;
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        settings = e.Value.ToString();
+        OnSettingsChanged.InvokeAsync(settings);
+    }
+}
+
+<h4>Настройки</h4>
+<input type="text" @bind="settings" class="form-control mt-2" placeholder="Дополнительные настройки..." @oninput="HandleInput" />

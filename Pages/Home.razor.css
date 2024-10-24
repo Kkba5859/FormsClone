@@ -1,0 +1,149 @@
+﻿body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+p {
+    color: #1d1d1f; /* Фиксированный цвет текста для всех параграфов */
+}
+
+.black-text {
+    color: black; /* Черный цвет текста */
+}
+
+.container {
+    display: flex; /* Используем flexbox */
+    flex-direction: column; /* Элементы располагаются вертикально */
+    padding: 1rem; /* Внутренние отступы */
+    min-height: 40vh; /* Контейнер занимает всю высоту экрана */
+    box-sizing: border-box; /* Включаем отступы и границы в общую ширину и высоту элемента */
+    width: 100%; /* Ширина контейнера на 100% */
+}
+
+.hero-section {
+    display: flex; /* Используем flexbox */
+    flex-direction: column; /* Вертикальное выравнивание */
+    align-items: center; /* Центрируем по горизонтали */
+    justify-content: center; /* Центрируем по вертикали */
+    min-height: 40vh; /* Минимальная высота */
+    background: linear-gradient(145deg, #f5f5f7, #e1e1e4); /* Градиентный фон */
+    text-align: center; /* Центрируем текст */
+    opacity: 0.9; /* Добавляем прозрачность */
+}
+
+.hero-title {
+    font-size: 1.5rem; /* Размер шрифта для заголовка героя */
+    font-weight: bold; /* Устанавливаем жирное начертание для заголовка */
+    color: #1d1d1f; /* Цвет текста заголовка */
+    margin-bottom: 0.8rem; /* Отступ снизу заголовка */
+}
+
+.hero-subtitle {
+    font-size: 1.2rem; /* Уменьшенный размер шрифта для подзаголовка героя */
+    color: #6e6e73; /* Цвет текста подзаголовка */
+    margin-bottom: 1.5rem; /* Отступ снизу подзаголовка */
+}
+
+.btn-large, .btn-success {
+    padding: 1rem 1.5rem; /* Внутренние отступы для кнопок */
+    font-size: 1rem; /* Размер шрифта для кнопок */
+    border-radius: 50px; /* Закругляем углы кнопок */
+    border: none; /* Убираем границу у кнопок */
+    color: white; /* Цвет текста кнопок */
+    margin: 0.5rem; /* Отступы вокруг кнопок */
+    cursor: pointer; /* Изменяем курсор на указатель при наведении */
+    transition: background-color 0.3s ease; /* Плавный переход для фона кнопок */
+}
+
+.btn-large {
+    background-color: #0071e3; /* Цвет фона для больших кнопок */
+}
+
+    .btn-large:hover {
+        background-color: #005bb5; /* Цвет фона при наведении на большие кнопки */
+    }
+
+.btn-secondary {
+    background-color: #e1e1e4; /* Цвет фона для вторичных кнопок */
+    color: #1d1d1f; /* Цвет текста вторичных кнопок */
+}
+
+    .btn-secondary:hover {
+        background-color: #c7c7cc; /* Цвет фона при наведении на вторичные кнопки */
+    }
+
+.info-section {
+    min-height: 150px; /* Минимальная высота секции информации */
+}
+
+    .info-section h4 {
+        font-size: 1.5rem; /* Размер шрифта для заголовка в секции информации */
+        margin-bottom: 0.8rem; /* Отступ снизу заголовка */
+        color: #1d1d1f; /* Цвет текста заголовка */
+    }
+
+    .info-section p {
+        font-size: 1.2rem; /* Размер шрифта для параграфов в секции информации */
+        color: #6e6e73; /* Цвет текста параграфов */
+        margin-bottom: 1rem; /* Отступ снизу параграфов */
+    }
+
+.recent-forms {
+    margin-bottom: 2rem; /* Отступ снизу для недавних форм */
+}
+
+    .recent-forms h3 {
+        margin-bottom: 1rem; /* Отступ снизу заголовка недавних форм */
+        font-size: 1.5rem; /* Размер шрифта для заголовка недавних форм */
+        color: black; /* Устанавливаем черный цвет текста для заголовка недавних форм */
+    }
+
+.form-card {
+    display: flex; /* Используем flexbox для карточек форм */
+    justify-content: space-between; /* Распределяем элементы карточки по горизонтали */
+    background-color: #fff; /* Цвет фона карточек форм */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Добавляем тень к карточкам форм */
+    padding: 1rem; /* Внутренние отступы для карточек форм */
+    margin-bottom: 1rem; /* Отступ снизу для карточек форм */
+    flex-wrap: wrap; /* Позволяет карточкам переноситься на новую строку при нехватке места */
+}
+
+    .form-card button {
+        background-color: #34c759; /* Цвет фона для кнопок в карточках форм */
+        color: white; /* Цвет текста кнопок */
+        padding: 0.5rem 1rem; /* Внутренние отступы для кнопок */
+        border: none; /* Убираем границу у кнопок */
+        border-radius: 5px; /* Закругляем углы кнопок */
+        cursor: pointer; /* Изменяем курсор на указатель при наведении */
+    }
+
+.center-button {
+    position: absolute; /* Позиционирование кнопки абсолютно */
+    bottom: 20px; /* Отступ от низа */
+    left: 50%; /* Центрируем кнопку по горизонтали */
+    transform: translateX(-50%); /* Сдвиг для центрирования кнопки */
+}
+
+/* Медиа-запросы */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 1.3rem; /* Уменьшение размера заголовка для мобильных устройств */
+    }
+
+    .hero-subtitle {
+        font-size: 1rem; /* Уменьшение размера подзаголовка для мобильных устройств */
+    }
+
+    .btn-large, .btn-success {
+        width: 100%; /* Кнопки занимают 100% ширины */
+        margin: 0.5rem 0; /* Отступы по вертикали */
+    }
+
+    .info-section h4 {
+        font-size: 1.2rem; /* Уменьшение размера заголовка в секции информации */
+    }
+
+    .info-section p {
+        font-size: 1rem; /* Уменьшение размера текста в секции информации */
+    }
+}

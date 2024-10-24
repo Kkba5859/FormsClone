@@ -11,5 +11,14 @@ namespace FormsClone.CSharp.MainFunctionality.Templates.Services
         public TemplatesService(ILocalStorageService localStorage) : base(localStorage)
         {
         }
+
+        public override async Task<List<Template>> SearchAsync(string searchTerm)
+        {
+            var allTemplates = await GetAllAsync(); 
+            return allTemplates.Where(t =>
+                t.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                (t.Description != null && t.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)) // Поиск по заголовку и описанию
+                ).ToList();
+        }
     }
 }

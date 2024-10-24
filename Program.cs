@@ -7,9 +7,11 @@ using FormsClone.CSharp.MainFunctionality.Questions.Models;
 using FormsClone.CSharp.MainFunctionality.Questions.Services;
 using FormsClone.CSharp.MainFunctionality.Templates.Models;
 using FormsClone.CSharp.MainFunctionality.Templates.Services;
-using FormsClone.Models.Registration.Service;
-using FormsClone.Models.User.Service;
-
+using FormsClone.CSharp.UserManagement.Registration.Services;
+using FormsClone.CSharp.UserManagement.AdminDashboard.Services;
+using FormsClone.CSharp.UserManagement.Interfaces;
+using FormsClone.CSharp.UserManagement.Login.Services;
+using FormsClone.CSharp.HomePage;
 
 namespace FormsClone
 {
@@ -19,24 +21,16 @@ namespace FormsClone
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
-
-            // ƒобавление LocalStorage дл€ локального хранени€ пользователей
             builder.Services.AddBlazoredLocalStorage();
-
-            // –егистраци€ состо€ни€ авторизации
             builder.Services.AddSingleton<AuthStateService>();
-
-            // –егистраци€ сервиса дл€ работы с пользовател€ми (и администраторами)
             builder.Services.AddScoped<IUserService, UserService>();
-
-            // –егистраци€ сервиса дл€ работы с регистрацией
             builder.Services.AddScoped<IRegistrationService, RegistrationService>();
-
-            // –егистраци€ сервисов дл€ работы с формами, вопросами и шаблонами через IEntityService
+            builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<IEntityService<Form>, FormsService>();
             builder.Services.AddScoped<IEntityService<Question>, QuestionsService>();
             builder.Services.AddScoped<IEntityService<Template>, TemplatesService>();
-
+            builder.Services.AddScoped<IHomeService, HomeService>();
+            builder.Services.AddScoped<ITabService, TabService>();
             await builder.Build().RunAsync();
         }
     }

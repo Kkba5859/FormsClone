@@ -1,0 +1,25 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@using Microsoft.AspNetCore.Components
+@inject ITabService TabService
+@code {
+    [Parameter]
+    public string FieldLabel { get; set; } = "Текст";
+
+    [Parameter]
+    public string TextValue { get; set; }
+
+    [Parameter]
+    public EventCallback<string> TextValueChanged { get; set; }
+
+    private void OnTextChanged(ChangeEventArgs e)
+    {
+        TextValue = e.Value.ToString();
+        TextValueChanged.InvokeAsync(TextValue);
+    }
+}
+
+<div class="form-group">
+    <label>@FieldLabel</label>
+    <input type="text" class="form-control" @bind="TextValue" @oninput="OnTextChanged" />
+</div>

@@ -88,5 +88,8 @@ namespace FormsClone.CSharp.MainFunctionality.AbstractClasses
                 await _localStorage.SetItemAsync(key.ToString(), entity);
             }
         }
+
+       
+        public abstract Task<List<T>> SearchAsync(string searchTerm);
     }
 }
