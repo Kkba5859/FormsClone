@@ -1,0 +1,17 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Answers.ChoosedComponents
+@using Microsoft.AspNetCore.Components
+@using FormsClone.CSharp.MainFunctionality.Interfaces 
+@code {
+    [Parameter] public string Answer { get; set; } // Параметр для хранения текстового ответа
+    [Parameter] public EventCallback<string> AnswerChanged { get; set; } // Делегат для уведомления об изменении ответа
+
+    private void OnAnswerInput(ChangeEventArgs e) // Метод для обработки ввода текста в поле
+    {
+        Answer = e.Value.ToString(); // Обновляем значение текстового ответа
+        AnswerChanged.InvokeAsync(Answer); // Вызываем событие изменения ответа
+    }
+}
+
+<div class="form-group">
+    <textarea class="form-control" @bind="Answer" @oninput="OnAnswerInput" placeholder="Введите текстовый ответ..."></textarea> <!-- Поле для ввода текстового ответа -->
+</div>

@@ -1,0 +1,68 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions
+@using System.Collections.Generic
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions.SelectComponents
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions.SelectComponents.FormsClone.CSharp.MainFunctionality.Interfaces
+@using Microsoft.AspNetCore.Components
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@inject IQuestionService QuestionService
+@inject ITabService TabService
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnQuestionsChanged { get; set; } // Событие для изменения вопросов
+
+    private int minValue = 0; // Минимальное значение для шкалы
+    private int maxValue = 2; // Максимальное значение для шкалы
+    private string question = ""; // Текст вопроса
+    private List<string> options = new List<string> { "Вариант 1" }; // Список вариантов ответов
+    private bool isRequired = false; // Обязательность вопроса
+    private string selectedOption = "Один из списка"; // Выбранный тип вопроса
+    private List<string> selectedOptions = new List<string>(); // Для хранения выбранных опций в нескольких выборках
+
+    private void AddOption() // Метод для добавления нового варианта
+    {
+        if (options.Count < 50) // Проверяем, чтобы количество вариантов не превышало 50
+        {
+            options.Add($"Вариант {options.Count + 1}"); // Добавляем новый вариант
+        }
+    }
+
+    private void HandleInput(ChangeEventArgs e) // Метод для обработки ввода текста
+    {
+        question = e.Value.ToString(); // Присваиваем введенное значение переменной question
+        OnQuestionsChanged.InvokeAsync(question); // Вызываем событие, чтобы уведомить об изменении вопроса
+    }
+
+    private void ToggleRequired(ChangeEventArgs e) // Метод для переключения обязательности вопроса
+    {
+        isRequired = !isRequired; // Переключаем значение isRequired
+    }
+
+    private void OnSelectedOptionChanged(string newOption) // Метод для обработки изменения выбранной опции
+    {
+        selectedOption = newOption; // Присваиваем новое значение переменной selectedOption
+    }
+}
+
+<SelectComponent SelectedOptions="selectedOptions" SelectedOptionsChanged="OnSelectedOptionChanged" /> // Компонент для выбора опций
+
+@switch (selectedOption) // Переключение по типу выбранного вопроса
+{
+    case "Текст": // Если выбран текстовый вопрос
+        <TextField FieldLabel="Текст" @bind="question" /> <!-- Привязываем текстовое поле к переменной question -->
+        break; // Переход к следующему случаю
+    case "Один из списка": // Если выбран вопрос "Один из списка"
+        <SingleChoice FieldLabel="Один из списка" Options="options" SelectedOptions="@selectedOptions" SelectedOptionsChanged="OnSelectedOptionChanged" />
+        // Компонент для выбора одного варианта
+        break; // Переход к следующему случаю
+    case "Несколько из списка": // Если выбран вопрос "Несколько из списка"
+        <MultipleChoice FieldLabel="Несколько из списка" Options="options" SelectedOptions="@selectedOptions" SelectedOptionsChanged="OnSelectedOptionChanged" />
+        // Компонент для выбора нескольких вариантов
+        break; // Переход к следующему случаю
+    case "Шкала": // Если выбран вопрос "Шкала"
+        <Scale FieldLabel="Минимальное значение" SelectedMin="@minValue" />
+        // Компонент для установки минимального значения шкалы
+        <Scale FieldLabel="Максимальное значение" SelectedMax="@maxValue" />
+        // Компонент для установки максимального значения шкалы
+        break; // Переход к следующему случаю
+}

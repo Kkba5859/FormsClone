@@ -1,4 +1,5 @@
 ﻿@namespace FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions.SelectComponents
 @using System.Collections.Generic
 @using Microsoft.AspNetCore.Components
 @using FormsClone.CSharp.MainFunctionality.Interfaces
@@ -6,29 +7,32 @@
 @inject ITabService TabService
 @code {
     [Parameter]
-    public string SelectedOption { get; set; } = "Один из списка"; 
-    [Parameter]
-    public EventCallback<string> SelectedOptionChanged { get; set; }
+    public string SelectedOption { get; set; } = "Один из списка"; // Выбранный вариант, по умолчанию "Один из списка"
 
-    private List<string> options = new List<string>
+    [Parameter]
+    public EventCallback<string> SelectedOptionChanged { get; set; } // Обратный вызов для изменения выбранного варианта
+
+    private List<string> options = new List<string> // Список доступных вариантов
     {
-        "Текст",
-        "Один из списка",
-        "Несколько из списка",
-        "Шкала"
+        "Текст", // Первый вариант
+        "Один из списка", // Второй вариант
+        "Несколько из списка", // Третий вариант
+        "Шкала" // Четвертый вариант
     };
 
-    private void OnOptionSelected(ChangeEventArgs e)
+    private void OnOptionSelected(ChangeEventArgs e) // Метод для обработки выбора варианта
     {
-        SelectedOption = e.Value.ToString();
-        SelectedOptionChanged.InvokeAsync(SelectedOption);
+        SelectedOption = e.Value.ToString(); // Присваиваем выбранный вариант
+        SelectedOptionChanged.InvokeAsync(SelectedOption); // Вызываем обратный вызов с новым значением
     }
 }
 
-<h4>Вопросы</h4>
+<h4>Вопросы</h4> <!-- Заголовок для секции вопросов -->
 <select class="form-control mt-2" @bind="SelectedOption" @bind:event="onchange">
-    @foreach (var option in options)
+    <!-- Выпадающий список для выбора варианта -->
+    @foreach (var option in options) // Перебираем все доступные варианты
     {
         <option value="@option">@option</option>
+        // Добавляем вариант в список
     }
 </select>

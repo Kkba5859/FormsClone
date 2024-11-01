@@ -1,7 +1,8 @@
 ﻿@page "/edit-form/{Id}"
 @namespace FormsClone.Pages.MainFunctionality.Forms.EditForm
-@using FormsClone.CSharp.MainFunctionality.Interfaces
 @using FormsClone.CSharp.MainFunctionality.Forms.Models
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions.SelectComponents
 @using FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
 @inject IEntityService<Form> FormsService
 @inject NavigationManager NavigationManager
@@ -9,25 +10,31 @@
 
 <h3>Редактировать Форму</h3>
 
+<!-- Поле ввода для названия формы -->
 <input type="text" @bind="currentForm.Name" class="form-control" placeholder="Название формы" />
+<!-- Поле ввода для описания формы -->
 <textarea @bind="currentForm.Info" class="form-control mt-2" placeholder="Описание формы"></textarea>
 
+<!-- Кнопка для сохранения изменений -->
 <button class="btn btn-primary mt-3" @onclick="SaveForm">Сохранить</button>
 
 @code {
     [Parameter]
-    public string? Id { get; set; }
-    private Form currentForm = new Form();
+    public string? Id { get; set; } // Параметр для получения ID формы
+
+    private Form currentForm = new Form(); // Объект текущей формы для редактирования
 
     protected override async Task OnInitializedAsync()
     {
+        // Получение формы по ID из сервиса
         currentForm = await FormsService.GetByIdAsync(int.Parse(Id));
-        TabService.SetActiveTab("Questions");
+        TabService.SetActiveTab("Questions"); // Установка активной вкладки
     }
 
     private async Task SaveForm()
     {
+        // Сохранение изменений формы
         await FormsService.UpdateAsync(currentForm);
-        NavigationManager.NavigateTo("/forms");
+        NavigationManager.NavigateTo("/forms"); // Переход к списку форм после сохранения
     }
 }

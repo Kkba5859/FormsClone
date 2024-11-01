@@ -1,109 +1,112 @@
 .page {
-    position: relative;
-    display: flex;
-    flex-direction: column;
+    position: relative; /* Относительное позиционирование для дочерних элементов */
+    display: flex; /* Используем flexbox для компоновки элементов */
+    flex-direction: column; /* Элементы будут располагаться в столбик */
 }
 
 .sidebar ::deep .nav-link {
-    color: #ffffff;
-    padding: 10px;
-    display: block;
-    transition: background-color 0.3s ease;
+    color: #ffffff; /* Цвет текста навигационной ссылки */
+    padding: 10px; /* Внутренние отступы для навигационной ссылки */
+    display: block; /* Отображение ссылок как блочных элементов */
+    transition: background-color 0.3s ease; /* Плавный переход для фона при наведении */
 }
 
     .sidebar ::deep .nav-link:hover {
         background-color: rgba(255, 255, 255, 0.2); /* Прозрачный белый фон при наведении */
     }
 
-
 main {
-    flex: 1;
+    flex: 1; /* Основной контент займет оставшееся пространство */
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%); /* Градиент для фона боковой панели */
 }
 
 .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
+    background-color: #f7f7f7; /* Цвет фона верхней панели */
+    border-bottom: 1px solid #d6d5d5; /* Нижняя граница верхней панели */
+    justify-content: flex-end; /* Выравнивание содержимого по правому краю */
+    height: 3.5rem; /* Высота верхней панели */
+    display: flex; /* Используем flexbox для расположения элементов */
+    align-items: center; /* Вертикальное выравнивание по центру */
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
+        white-space: nowrap; /* Запрет на перенос строк */
+        margin-left: 1.5rem; /* Отступ слева для ссылок и кнопок */
+        text-decoration: none; /* Убираем подчеркивание */
     }
 
         .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-            text-decoration: underline;
+            text-decoration: underline; /* Подчеркивание при наведении */
         }
 
         .top-row ::deep a:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
+            overflow: hidden; /* Скрытие переполненного текста */
+            text-overflow: ellipsis; /* Отображение многоточия для переполненного текста */
         }
 
+/* Мобильные стили для экранов шириной до 640px */
 @media (max-width: 640.98px) {
     .top-row {
-        justify-content: space-between;
+        justify-content: space-between; /* Выравнивание элементов по краям */
     }
 
         .top-row ::deep a, .top-row ::deep .btn-link {
-            margin-left: 0;
+            margin-left: 0; /* Убираем отступы для мобильной версии */
         }
 }
 
+/* Стили для экранов шириной от 641px */
 @media (min-width: 641px) {
     .page {
-        flex-direction: row;
+        flex-direction: row; /* Изменяем направление на строку для широкой компоновки */
     }
 
     .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
+        width: 250px; /* Ширина боковой панели */
+        height: 100vh; /* Высота боковой панели на весь экран */
+        position: sticky; /* Зафиксировать боковую панель при прокрутке */
+        top: 0; /* Отступ от верхней части окна */
     }
 
     .top-row {
-        position: sticky;
-        top: 0;
-        z-index: 1;
+        position: sticky; /* Зафиксировать верхнюю панель при прокрутке */
+        top: 0; /* Отступ от верхней части окна */
+        z-index: 1; /* Устанавливаем порядок наложения */
     }
 
         .top-row.auth ::deep a:first-child {
-            flex: 1;
-            text-align: right;
-            width: 0;
+            flex: 1; /* Увеличиваем размер первой ссылки */
+            text-align: right; /* Выравнивание текста по правому краю */
+            width: 0; /* Убираем ширину для растяжения */
         }
 
     .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
+        padding-left: 2rem !important; /* Увеличиваем отступ слева */
+        padding-right: 1.5rem !important; /* Увеличиваем отступ справа */
     }
 }
+
+/* Мобильные стили для экранов шириной до 480px */
 @media (max-width: 480px) {
     body {
-        font-size: 14px;
+        font-size: 14px; /* Размер шрифта для тела страницы */
     }
 
     h1 {
-        font-size: 1.8rem;
+        font-size: 1.8rem; /* Размер шрифта для заголовка первого уровня */
     }
 
     h2 {
-        font-size: 1.4rem;
+        font-size: 1.4rem; /* Размер шрифта для заголовка второго уровня */
     }
 }
 
-/* Настроим элементы навигации для широких экранов */
+/* Стили для экранов шириной от 1024px */
 @media (min-width: 1024px) {
     .nav-scrollable {
-        width: 300px; /* Расширим меню на больших экранах */
+        width: 300px; /* Расширение меню для больших экранов */
     }
 }

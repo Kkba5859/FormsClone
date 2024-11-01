@@ -1,0 +1,32 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Answers.ChoosedComponents
+@using Microsoft.AspNetCore.Components
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+
+@code {
+    [Parameter] public List<string> Answer { get; set; } = new(); // Список выбранных ответов
+    [Parameter] public List<string> Options { get; set; } // Доступные варианты ответов
+    [Parameter] public EventCallback<List<string>> AnswerChanged { get; set; } // Событие для изменения выбранных ответов
+
+    // Метод для обработки изменения состояния чекбокса
+    private void OnOptionToggled(ChangeEventArgs e, string option)
+    {
+        if (Answer.Contains(option))
+            Answer.Remove(option); // Если вариант уже выбран, убираем его из списка
+        else
+            Answer.Add(option); // Если вариант не выбран, добавляем его в список
+
+        // Вызываем событие, чтобы уведомить родительский компонент об изменении
+        AnswerChanged.InvokeAsync(Answer);
+    }
+}
+
+<div class="form-group">
+    <label>Выберите один или несколько вариантов</label>
+    @foreach (var option in Options) // Перебираем все варианты
+    {
+        <div>
+            <input type="checkbox" @onchange="e => OnOptionToggled(e, option)" checked="@Answer.Contains(option)" /> <!-- Чекбокс для выбора варианта -->
+            <span>@option</span> <!-- Отображаем текст варианта -->
+        </div>
+    }
+</div>

@@ -1,0 +1,26 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Answers.ChoosedComponents
+@using Microsoft.AspNetCore.Components // Импортируем пространство имен для компонентов Blazor
+@using FormsClone.CSharp.MainFunctionality.Interfaces // Импортируем пространство имен для интерфейсов бизнес-логики
+
+@code {
+    [Parameter] public string Answer { get; set; } // Параметр для хранения выбранного ответа
+    [Parameter] public List<string> Options { get; set; } // Параметр для хранения списка доступных вариантов
+    [Parameter] public EventCallback<string> AnswerChanged { get; set; } // Делегат для уведомления об изменении ответа
+
+    private async Task OnOptionSelected(ChangeEventArgs e) // Метод для обработки выбора варианта
+    {
+        Answer = e.Value.ToString(); // Обновляем значение выбранного ответа
+        await AnswerChanged.InvokeAsync(Answer); // Вызываем событие изменения ответа
+    }
+}
+
+<div class="form-group">
+    <label>Выберите один из вариантов</label> <!-- Заголовок для выпадающего списка -->
+    <select class="form-control" @bind="Answer">
+        <!-- Выпадающий список, связанный с параметром Answer -->
+        @foreach (var option in Options) // Перебираем все доступные варианты
+        {
+            <option value="@option">@option</option> <!-- Каждый вариант в списке -->
+        }
+    </select>
+</div>

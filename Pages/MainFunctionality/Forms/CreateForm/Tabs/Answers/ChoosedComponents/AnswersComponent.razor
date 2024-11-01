@@ -1,0 +1,35 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Answers.ChoosedComponents
+@using Microsoft.AspNetCore.Components
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+
+@code {
+    [Parameter] public string QuestionType { get; set; } // Тип вопроса из `QuestionsComponent`
+    [Parameter] public EventCallback<string> OnAnswersChanged { get; set; } // Событие для изменения ответа
+
+    private string answer; // Переменная для хранения текущего ответа
+
+    // Метод для обработки изменения ответа
+    private async Task HandleAnswerChange(string newAnswer)
+    {
+        answer = newAnswer; // Обновляем текущее значение ответа
+        await OnAnswersChanged.InvokeAsync(answer); // Вызываем событие для уведомления о новом ответе
+    }
+}
+
+<h4>Ответ</h4>
+
+@switch (QuestionType) // В зависимости от типа вопроса отображаем соответствующий компонент для ответа
+{
+    case "Текст": // Если тип вопроса - текст
+        <AnswerText Answer="answer" AnswerChanged="HandleAnswerChange" />
+        break;
+    case "Один из списка": // Если тип вопроса - один из списка
+        <AnswerSingleChoice Answer="answer" AnswerChanged="HandleAnswerChange" />
+        break;
+    case "Несколько из списка": // Если тип вопроса - несколько из списка
+        <AnswerMultipleChoice SelectedAnswers="@(new List<string> { answer })" OnAnswersChanged="HandleAnswerChange" />
+        break;
+    case "Шкала": // Если тип вопроса - шкала
+        <AnswerScale Answer="answer" AnswerChanged="HandleAnswerChange" />
+        break;
+}

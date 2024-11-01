@@ -1,39 +1,45 @@
-﻿@namespace FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
-@using FormsClone.CSharp.MainFunctionality.Interfaces
-@using Microsoft.AspNetCore.Components
-@inject ITabService TabService
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents // Указываем пространство имен для текущего компонента
+@using FormsClone.CSharp.MainFunctionality.Interfaces // Подключаем пространство имен для интерфейсов
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions.SelectComponents
+@using Microsoft.AspNetCore.Components // Подключаем пространство имен для компонентов Blazor
+@inject ITabService TabService // Внедряем сервис вкладок
+
 @code {
     [Parameter]
-    public string FieldLabel { get; set; } = "Шкала";
+    public string FieldLabel { get; set; } = "Шкала"; // Метка поля, по умолчанию "Шкала"
 
     [Parameter]
-    public int SelectedMin { get; set; }
+    public int SelectedMin { get; set; } // Выбранное минимальное значение
 
     [Parameter]
-    public int SelectedMax { get; set; }
+    public int SelectedMax { get; set; } // Выбранное максимальное значение
 
-    private void OnMinChanged(ChangeEventArgs e)
+    private void OnMinChanged(ChangeEventArgs e) // Метод для обработки изменения минимального значения
     {
-        SelectedMin = Convert.ToInt32(e.Value);
+        SelectedMin = Convert.ToInt32(e.Value); // Присваиваем новое минимальное значение
     }
 
-    private void OnMaxChanged(ChangeEventArgs e)
+    private void OnMaxChanged(ChangeEventArgs e) // Метод для обработки изменения максимального значения
     {
-        SelectedMax = Convert.ToInt32(e.Value);
+        SelectedMax = Convert.ToInt32(e.Value); // Присваиваем новое максимальное значение
     }
 }
 
 <div class="form-group">
-    <label>@FieldLabel</label>
-    <input type="text" class="form-control" placeholder="Описание шкалы" />
+    // Создаем контейнер для элементов формы
+    <label>@FieldLabel</label> // Отображаем метку поля
+    <input type="text" class="form-control" placeholder="Описание шкалы" /> // Поле ввода для описания шкалы
     <select @onchange="OnMinChanged" value="@SelectedMin">
-        <option value="0">0</option>
-        <option value="1">1</option>
+        // Выпадающий список для выбора минимального значения
+        <option value="0">0</option> // Первый вариант для минимального значения
+        <option value="1">1</option> // Второй вариант для минимального значения
     </select>
     <select @onchange="OnMaxChanged" value="@SelectedMax">
-        @for (int i = 2; i <= 10; i++)
+        // Выпадающий список для выбора максимального значения
+        @for (int i = 2; i <= 10; i++) // Цикл для создания вариантов от 2 до 10
         {
             <option value="@i">@i</option>
+            // Добавляем вариант в список
         }
     </select>
 </div>

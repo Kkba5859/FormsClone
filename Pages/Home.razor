@@ -1,109 +1,109 @@
-﻿    @page "/"
-    @using FormsClone.CSharp.HomePage
-    @using System.Text.Json;
-    @using FormsClone.CSharp.MainFunctionality.Forms.Models
-    @using FormsClone.CSharp.MainFunctionality.Forms.Services
-    @using FormsClone.CSharp.MainFunctionality.Questions.Models
-    @using FormsClone.CSharp.MainFunctionality.Questions.Services
-    @using FormsClone.CSharp.MainFunctionality.Templates.Models
-    @using FormsClone.CSharp.MainFunctionality.Templates.Services
-    @using FormsClone.CSharp.MainFunctionality.Interfaces
-    @using FormsClone.CSharp.UserManagement.Interfaces
-    @inject NavigationManager NavigationManager
-    @inject IJSRuntime JSRuntime
-    @inject IEntityService<Form> FormsService
-    @inject IEntityService<Template> TemplatesService
-    @inject IEntityService<Question> QuestionsService
-    @inject IHomeService HomeService
-    @inject ILoginService LoginService
+﻿@page "/"
+@using FormsClone.CSharp.HomePage
+@using System.Text.Json
+@using FormsClone.CSharp.MainFunctionality.Forms.Models
+@using FormsClone.CSharp.MainFunctionality.Forms.Services
+@using FormsClone.CSharp.MainFunctionality.Questions.Models
+@using FormsClone.CSharp.MainFunctionality.Questions.Services
+@using FormsClone.CSharp.MainFunctionality.Templates.Models
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+@using FormsClone.CSharp.UserManagement.Interfaces
 
-    @code {
-        private List<Form> randomForms = new List<Form>();
-        private List<Template> randomTemplates = new List<Template>();
-        private List<Question> randomQuestions = new List<Question>();
-        private bool isUserLoggedIn;
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject IEntityService<Form> FormsService
+@inject IEntityService<Template> TemplatesService
+@inject IEntityService<Question> QuestionsService
+@inject IHomeService HomeService
+@inject ILoginService LoginService
 
-        protected override async Task OnInitializedAsync()
-        {
-            isUserLoggedIn = await LoginService.IsUserLoggedInAsync();
-            randomForms = await HomeService.GetAllFormsAsync();
-            randomTemplates = await HomeService.GetAllTemplatesAsync();
-            randomQuestions = await HomeService.GetAllQuestionsAsync();
-        }
+@code {
+    private List<Form> randomForms = new List<Form>();
+    private List<Template> randomTemplates = new List<Template>();
+    private List<Question> randomQuestions = new List<Question>();
+    private bool isUserLoggedIn;
 
-        private async Task EditTemplate(string id)
-        {
-            NavigationManager.NavigateTo($"/edit-template/{id}");
-        }
-
-        private async Task DeleteTemplate(string id)
-        {
-            await HomeService.DeleteTemplateAsync(id);
-            randomTemplates = await HomeService.GetAllTemplatesAsync();
-        }
-
-        private async Task EditForm(string id)
-        {
-            NavigationManager.NavigateTo($"/edit-form/{id}");
-        }
-
-        private async Task DeleteForm(string id)
-        {
-            await HomeService.DeleteFormAsync(id);
-            randomForms = await HomeService.GetAllFormsAsync(); 
-        }
-
-        private async Task EditQuestion(string id)
-        {
-            NavigationManager.NavigateTo($"/edit-question/{id}");
-        }
-
-        private async Task DeleteQuestion(string id)
-        {
-            await HomeService.DeleteQuestionAsync(id);
-            randomQuestions = await HomeService.GetAllQuestionsAsync(); 
-        }
-    }
-
-    @if (isUserLoggedIn)
+    protected override async Task OnInitializedAsync()
     {
-        <div class="container">
-            <section class="info-section recent-forms">
-                <h3>Недавние формы</h3>
-                @foreach (var form in randomForms)
-                {
-                    <div class="form-card">
-                    <span class="black-text">@form.Name</span>
-                        <div>
-                            <button class="btn btn-warning btn-sm" @onclick="() => EditForm(form.ID)">Редактировать</button>
-                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteForm(form.ID)">Удалить</button>
-                        </div>
-                    </div>
-                }
-            </section>
-        </div>
+        isUserLoggedIn = await LoginService.IsUserLoggedInAsync();
+        randomForms = await HomeService.GetAllFormsAsync();
+        randomTemplates = await HomeService.GetAllTemplatesAsync();
+        randomQuestions = await HomeService.GetAllQuestionsAsync();
     }
 
-    <div class="container">
-        @if (!isUserLoggedIn)
-        {
-            <div class="hero-section">
-                <div class="hero-title">Создайте, поделитесь, проанализируйте</div>
-                <div class="hero-subtitle">Настраиваемые формы для опросов, голосований и анкет</div>
-                <div>
-                    <button class="btn-large" @onclick="@(() => NavigationManager.NavigateTo("/registration"))">Зарегистрироваться</button>
-                    <button class="btn-large btn-secondary" @onclick="@(() => NavigationManager.NavigateTo("/login"))">Войти</button>
-                </div>
-            </div>
+    private async Task EditTemplate(string id)
+    {
+        NavigationManager.NavigateTo($"/edit-template/{id}");
+    }
 
-            <div class="info-section">
-                <h4>Основные функции для всех</h4>
-                <p>Даже без учетной записи вы можете искать и просматривать шаблоны в режиме только для чтения. Войдите, чтобы создать свои!</p>
-                <div>
+    private async Task DeleteTemplate(string id)
+    {
+        await HomeService.DeleteTemplateAsync(id);
+        randomTemplates = await HomeService.GetAllTemplatesAsync();
+    }
+
+    private async Task EditForm(string id)
+    {
+        NavigationManager.NavigateTo($"/edit-form/{id}");
+    }
+
+    private async Task DeleteForm(string id)
+    {
+        await HomeService.DeleteFormAsync(id);
+        randomForms = await HomeService.GetAllFormsAsync();
+    }
+
+    private async Task EditQuestion(string id)
+    {
+        NavigationManager.NavigateTo($"/edit-question/{id}");
+    }
+
+    private async Task DeleteQuestion(string id)
+    {
+        await HomeService.DeleteQuestionAsync(id);
+        randomQuestions = await HomeService.GetAllQuestionsAsync();
+    }
+}
+
+@if (isUserLoggedIn)
+{
+    <div class="container">
+        <section class="info-section recent-forms">
+            <h3>Недавние формы</h3>
+            @foreach (var form in randomForms)
+            {
+                <div class="form-card">
+                    <span class="black-text">@form.Name</span>
+                    <div>
+                        <button class="btn btn-warning btn-sm" @onclick="() => EditForm(form.ID)">Редактировать</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteForm(form.ID)">Удалить</button>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+}
+
+<div class="container">
+    @if (!isUserLoggedIn)
+    {
+        <div class="hero-section">
+            <div class="hero-title">Создайте, поделитесь, проанализируйте</div>
+            <div class="hero-subtitle">Настраиваемые формы для опросов, голосований и анкет</div>
+            <div>
+                <button class="btn-large" @onclick="@(() => NavigationManager.NavigateTo("/registration"))">Зарегистрироваться</button>
+                <button class="btn-large btn-secondary" @onclick="@(() => NavigationManager.NavigateTo("/login"))">Войти</button>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h4>Основные функции для всех</h4>
+            <p>Даже без учетной записи вы можете искать и просматривать шаблоны в режиме только для чтения. Войдите, чтобы создать свои!</p>
+            <div>
                 <button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo("/templates"))">Шаблоны</button>
                 <button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo("/forms"))">Формы</button>
                 <button class="btn btn-success" @onclick="@(() => NavigationManager.NavigateTo("/questions"))">Вопросы</button>
-                </div>
             </div>
-        }
-    </div>
+        </div>
+    }
+</div>

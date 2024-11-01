@@ -1,0 +1,23 @@
+﻿@namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Answers.ChoosedComponents
+@using Microsoft.AspNetCore.Components
+@using FormsClone.CSharp.MainFunctionality.Interfaces
+
+@code {
+    [Parameter] public int SelectedValue { get; set; } // Выбранное значение
+    [Parameter] public EventCallback<int> SelectedValueChanged { get; set; } // Событие для изменения выбранного значения
+    [Parameter] public int MinValue { get; set; } = 0; // Минимальное значение по умолчанию
+    [Parameter] public int MaxValue { get; set; } = 10; // Максимальное значение по умолчанию
+
+    // Метод для обработки изменения значения слайдера
+    private void OnValueChanged(ChangeEventArgs e)
+    {
+        SelectedValue = int.Parse(e.Value.ToString()); // Преобразуем значение в целое число
+        SelectedValueChanged.InvokeAsync(SelectedValue); // Вызываем событие для уведомления об изменении
+    }
+}
+
+<div class="form-group">
+    <label>Выберите значение на шкале от @MinValue до @MaxValue</label>
+    <input type="range" class="form-control-range" min="@MinValue" max="@MaxValue" @bind="SelectedValue" @oninput="OnValueChanged" /> <!-- Слайдер для выбора значения -->
+    <span>@SelectedValue</span> <!-- Отображаем текущее выбранное значение -->
+</div>

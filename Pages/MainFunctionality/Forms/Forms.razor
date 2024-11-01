@@ -1,7 +1,8 @@
 ﻿@page "/forms"
 @namespace FormsClone.Pages.MainFunctionality.Forms
-@using FormsClone.CSharp.MainFunctionality.Interfaces
 @using FormsClone.CSharp.MainFunctionality.Forms.Models
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions.SelectComponents
+@using FormsClone.CSharp.MainFunctionality.Interfaces
 @using FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
 @using FormsClone.CSharp.UserManagement.Interfaces
 @inject IEntityService<Form> FormsService
@@ -11,32 +12,34 @@
 
 <h3>Формы</h3>
 
+<!-- Группа ввода для поиска по шаблонам -->
 <div class="input-group mb-3">
-    <input type="text" class="form-control" @bind="searchTerm" placeholder="Поиск по шаблонам..." />
-    <button class="btn btn-primary" @onclick="SearchForms">Найти</button>
+    <input type="text" class="form-control" @bind="searchTerm" placeholder="Поиск по шаблонам..." /> <!-- Поле ввода для поиска -->
+    <button class="btn btn-primary" @onclick="SearchForms">Найти</button> <!-- Кнопка поиска -->
 </div>
 
-@if (isUserLoggedIn) 
+@if (isUserLoggedIn)
 {
+    <!-- Кнопка для создания новой формы, видимая только для авторизованных пользователей -->
     <button class="btn btn-primary" @onclick="NavigateToCreateForm">Создать Форму</button>
 }
 
-@if (filteredForms != null && filteredForms.Any())
+@if (filteredForms != null && filteredForms.Any()) // Проверка на наличие отфильтрованных форм
 {
     <ul class="list-group mt-3">
-        @foreach (var form in filteredForms)
+        @foreach (var form in filteredForms) // Перебор отфильтрованных форм
         {
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                @form.Name
+                @form.Name <!-- Отображение названия формы -->
                 <div>
-                    @if (isUserLoggedIn) 
+                    @if (isUserLoggedIn) // Если пользователь авторизован
                     {
-                        <button class="btn btn-warning btn-sm" @onclick="() => EditForm(form.ID)">Редактировать</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteForm(form.ID)">Удалить</button>
+                        <button class="btn btn-warning btn-sm" @onclick="() => EditForm(form.ID)">Редактировать</button> <!-- Кнопка редактирования -->
+                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteForm(form.ID)">Удалить</button> <!-- Кнопка удаления -->
                     }
                     else
                     {
-                        <span class="text-muted">Войдите, чтобы редактировать или удалять шаблоны.</span>
+                        <span class="text-muted">Войдите, чтобы редактировать или удалять шаблоны.</span> <!-- Сообщение для неавторизованных пользователей -->
                     }
                 </div>
             </li>
@@ -45,49 +48,49 @@
 }
 else
 {
-    <p>Нет доступных форм.</p>
+    <p>Нет доступных форм.</p> <!-- Сообщение при отсутствии форм -->
 }
 
 @code {
-    private List<Form>? forms;
-    private List<Form>? filteredForms;
-    private bool isUserLoggedIn;
-    private string searchTerm = string.Empty;
+    private List<Form>? forms; // Список всех форм
+    private List<Form>? filteredForms; // Список отфильтрованных форм
+    private bool isUserLoggedIn; // Статус авторизации пользователя
+    private string searchTerm = string.Empty; // Строка для поиска
 
     protected override async Task OnInitializedAsync()
     {
-        forms = await FormsService.GetAllAsync();
-        filteredForms = forms; 
-        isUserLoggedIn = await LoginService.IsUserLoggedInAsync();
+        forms = await FormsService.GetAllAsync(); // Получение всех форм
+        filteredForms = forms; // Изначально отображаем все формы
+        isUserLoggedIn = await LoginService.IsUserLoggedInAsync(); // Проверка статуса авторизации
     }
 
     private void NavigateToCreateForm()
     {
-        TabService.SetActiveTab("Questions");
-        NavigationManager.NavigateTo("/create-form");
+        TabService.SetActiveTab("Questions"); // Установка активной вкладки
+        NavigationManager.NavigateTo("/create-form"); // Переход к созданию формы
     }
 
     private void EditForm(string id)
     {
-        NavigationManager.NavigateTo($"/edit-form/{id}");
+        NavigationManager.NavigateTo($"/edit-form/{id}"); // Переход к редактированию формы
     }
 
     private async Task DeleteForm(string id)
     {
-        await FormsService.DeleteAsync(int.Parse(id));
-        forms = await FormsService.GetAllAsync();
-        filteredForms = forms;
+        await FormsService.DeleteAsync(int.Parse(id)); // Удаление формы по ID
+        forms = await FormsService.GetAllAsync(); // Обновление списка всех форм
+        filteredForms = forms; // Обновление отфильтрованных форм
     }
 
     private async Task SearchForms()
     {
-        if (string.IsNullOrWhiteSpace(searchTerm))
+        if (string.IsNullOrWhiteSpace(searchTerm)) // Если строка поиска пустая
         {
-            filteredForms = forms;
+            filteredForms = forms; // Показываем все формы
         }
         else
         {
-            filteredForms = await FormsService.SearchAsync(searchTerm); 
+            filteredForms = await FormsService.SearchAsync(searchTerm); // Поиск форм по строке поиска
         }
     }
 }

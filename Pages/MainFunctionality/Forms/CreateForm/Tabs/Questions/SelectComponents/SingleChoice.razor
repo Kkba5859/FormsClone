@@ -1,49 +1,52 @@
 ﻿@namespace FormsClone.Pages.MainFunctionality.Forms.Tabs.Questions.SelectComponents
 @using FormsClone.CSharp.MainFunctionality.Interfaces
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions.SelectComponents
 @inject ITabService TabService
 @code {
     [Parameter]
-    public string FieldLabel { get; set; } = "Один из списка";
+    public string FieldLabel { get; set; } = "Один из списка"; // Метка поля, по умолчанию "Один из списка"
 
     [Parameter]
-    public List<string> Options { get; set; } = new List<string>();
+    public List<string> Options { get; set; } = new List<string>(); // Список вариантов, по умолчанию пустой
 
     [Parameter]
-    public EventCallback<List<string>> OptionsChanged { get; set; }
+    public EventCallback<List<string>> OptionsChanged { get; set; } // Обратный вызов для изменения списка вариантов
 
-    private void AddOption()
+    private void AddOption() // Метод для добавления нового варианта
     {
-        if (Options.Count < 50)
+        if (Options.Count < 50) // Проверяем, что количество вариантов меньше 50
         {
-            Options.Add("");
-            OptionsChanged.InvokeAsync(Options);
+            Options.Add(""); // Добавляем пустую строку для нового варианта
+            OptionsChanged.InvokeAsync(Options); // Вызываем обратный вызов с обновленным списком
         }
     }
 
-    private void RemoveOption(int index)
+    private void RemoveOption(int index) // Метод для удаления варианта по индексу
     {
-        if (Options.Count > 2)
+        if (Options.Count > 2) // Проверяем, что количество вариантов больше 2
         {
-            Options.RemoveAt(index);
-            OptionsChanged.InvokeAsync(Options);
+            Options.RemoveAt(index); // Удаляем вариант по индексу
+            OptionsChanged.InvokeAsync(Options); // Вызываем обратный вызов с обновленным списком
         }
     }
 
-    private void OnOptionChanged(ChangeEventArgs e, int index)
+    private void OnOptionChanged(ChangeEventArgs e, int index) // Метод для обработки изменения варианта
     {
-        Options[index] = e.Value.ToString();
-        OptionsChanged.InvokeAsync(Options);
+        Options[index] = e.Value.ToString(); // Присваиваем новое значение выбранному варианту
+        OptionsChanged.InvokeAsync(Options); // Вызываем обратный вызов с обновленным списком
     }
 }
 
 <div class="form-group">
-    <label>@FieldLabel</label>
-    @for (int i = 0; i < Options.Count; i++)
+    <!-- Группа элементов формы -->
+    <label>@FieldLabel</label> <!-- Метка для поля -->
+    @for (int i = 0; i < Options.Count; i++) // Перебираем все варианты
     {
         <div class="input-group mb-2">
-            <input type="text" class="form-control" @bind="Options[i]" @oninput="(e) => OnOptionChanged(e, i)" />
-            <button class="btn btn-danger" @onclick="() => RemoveOption(i)">Удалить</button>
+            <!-- Группа ввода для каждого варианта -->
+            <input type="text" class="form-control" @bind="Options[i]" @oninput="(e) => OnOptionChanged(e, i)" /> <!-- Поле ввода для варианта -->
+            <button class="btn btn-danger" @onclick="() => RemoveOption(i)">Удалить</button> <!-- Кнопка для удаления варианта -->
         </div>
     }
-    <button class="btn btn-primary" @onclick="AddOption">Добавить вариант</button>
+    <button class="btn btn-primary" @onclick="AddOption">Добавить вариант</button> <!-- Кнопка для добавления нового варианта -->
 </div>

@@ -1,17 +1,19 @@
 ﻿@page "/create-form"
 @namespace FormsClone.Pages.MainFunctionality.Forms.CreateForm
+@using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions.SelectComponents
 @using Microsoft.AspNetCore.Components
 @using FormsClone.CSharp.MainFunctionality.Interfaces
 @using FormsClone.CSharp.MainFunctionality.Forms.Models
 @using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Questions
 @using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Answers
 @using FormsClone.Pages.MainFunctionality.Forms.CreateForm.Tabs.Settings
-@inject IEntityService<Form> FormsService
-@inject NavigationManager NavigationManager
-@inject ITabService TabService
+@inject IEntityService<Form> FormsService 
+@inject NavigationManager NavigationManager 
+@inject ITabService TabService 
 
 <h3 class="my-3">Создать Форму</h3>
 
+<!-- Кнопки для переключения между вкладками -->
 <div class="btn-group mb-3" role="group">
     <button class="btn btn-outline-primary" @onclick='() => SetActiveTab("Questions")'>Вопросы</button>
     <button class="btn btn-outline-primary" @onclick='() => SetActiveTab("Answers")'>Ответы</button>
@@ -19,29 +21,34 @@
 </div>
 
 <div>
+    <!-- Отображение соответствующей вкладки в зависимости от активной вкладки -->
     @if (TabService.ActiveTab == "Questions")
     {
         <QuestionsComponent />
+        // Компонент для управления вопросами
     }
     else if (TabService.ActiveTab == "Answers")
     {
         <AnswersComponent />
+        // Компонент для управления ответами
     }
     else if (TabService.ActiveTab == "Settings")
     {
         <SettingsComponent />
+        // Компонент для управления настройками
     }
 </div>
 
 @code {
     private void SetActiveTab(string tab)
     {
-        TabService.SetActiveTab(tab);
-        StateHasChanged();
+        TabService.SetActiveTab(tab); // Установка активной вкладки
+        StateHasChanged(); // Обновление состояния компонента
     }
 
     protected override void OnInitialized()
     {
+        // Установка активной вкладки при инициализации
         TabService.SetActiveTab(TabService.ActiveTab ?? "Questions");
     }
 }

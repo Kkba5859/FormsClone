@@ -4,7 +4,7 @@
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
 @inject ILoginService LoginService
-@inject IJSRuntime JSRuntime 
+@inject IJSRuntime JSRuntime
 
 <div class="top-row ps-3 navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -41,11 +41,17 @@
                         <span class="navbar-text text-light">Привет, @UserName</span>
                     </li>
 
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/user-dashboard">
+                            <span class="bi bi-person-circle"></span> Пользователь
+                        </NavLink>
+                    </li>
+
                     @if (IsAdmin)
                     {
                         <li class="nav-item">
                             <NavLink class="nav-link" href="/admin-dashboard">
-                                <span class="bi bi-speedometer2"></span> Панель управления
+                                <span class="bi bi-speedometer2"></span> Админ
                             </NavLink>
                         </li>
                     }
@@ -74,7 +80,6 @@
                     <button id="theme-toggle-button" class="btn btn-dark nav-link" @onclick="ToggleTheme">
                         Переключить тему
                     </button>
-
                 </li>
             </ul>
         </div>
@@ -102,7 +107,7 @@
 
         if (IsLoggedIn)
         {
-            IsAdmin = true; 
+            IsAdmin = true;
             UserName = await UserService.GetUserNameAsync();
         }
         else
@@ -113,11 +118,12 @@
 
         StateHasChanged();
     }
+
     private async Task SetInitialThemeAsync()
     {
         var preferredTheme = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "theme") ?? "light";
         isDarkTheme = preferredTheme == "dark";
-        await JSRuntime.InvokeVoidAsync("toggleTheme", isDarkTheme); 
+        await JSRuntime.InvokeVoidAsync("toggleTheme", isDarkTheme);
     }
 
     private async Task Logout()
@@ -130,7 +136,7 @@
     private async Task ToggleTheme()
     {
         isDarkTheme = !isDarkTheme;
-        await JSRuntime.InvokeVoidAsync("toggleTheme", isDarkTheme); 
-        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "theme", isDarkTheme ? "dark" : "light"); 
+        await JSRuntime.InvokeVoidAsync("toggleTheme", isDarkTheme);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "theme", isDarkTheme ? "dark" : "light");
     }
 }
