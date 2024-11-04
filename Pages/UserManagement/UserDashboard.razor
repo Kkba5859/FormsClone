@@ -3,12 +3,17 @@
 @using FormsClone.CSharp.UserManagement.AdminDashboard.Services
 @using FormsClone.CSharp.UserManagement.Interfaces
 @using FormsClone.CSharp.UserManagement.AdminDashboard.Models
+@using System.Net.Http.Json;
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 @inject ILoginService LoginService
 @inject ILocalStorageService LocalStorageService
 @inject IJSRuntime JS
-@inject ISalesforceService SalesforceService // Внедряем SalesforceService
+@inject ISalesforceService SalesforceService
+@inject IJiraService JiraService
+@inject HttpClient HttpClient
+@inject HttpClient Http
+
 
 <h3 class="text-center mb-4">Личный кабинет</h3>
 
@@ -53,7 +58,8 @@ else if (_currentUser != null)
             <button class="btn btn-danger" @onclick="DeleteAccount">
                 Удалить аккаунт
             </button>
-            <button class="btn btn-info" @onclick="FetchSalesforceData">Загрузить данные Salesforce</button> <!-- Кнопка для загрузки данных -->
+            <button class="btn btn-info" @onclick="FetchSalesforceData">Загрузить данные Salesforce</button>
+            <button class="btn btn-primary" @onclick="CreateJiraIssue">Создать задачу в Jira</button>
         </div>
     </div>
 }
@@ -129,6 +135,26 @@ else
             return;
         }
     }
+    private async Task CreateJiraIssue()
+    {
+        var issueData = new
+        {
+            projectKey = "SCRUM",
+            summary = "Задача от пользователя",
+            description = "Описание задачи, созданной из личного кабинета",
+            issueType = "Task"
+        };
+
+        var response = await HttpClient.PostAsJsonAsync("https://localhost:5001/api/Jira/CreateIssue", issueData); // Замените Http на HttpClient
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Задача успешно создана.");
+        }
+        else
+        {
+            Console.WriteLine("Ошибка создания задачи.");
+        }
+    }
 
     private void ShowChangePasswordModal()
     {
@@ -172,7 +198,7 @@ else
     {
         // Для получения токена доступа запрашиваем у пользователя имя пользователя и пароль
         string username = _currentUser.Username; // Если ваш пользователь уже аутентифицирован
-        string password = "YOUR_PASSWORD"; // Здесь нужно ввести пароль или его получать по-другому, например, из модального окна
+        string password = "Kkba5859368a"; // Здесь нужно ввести пароль или его получать по-другому, например, из модального окна
 
         string accessToken = await SalesforceService.GetAccessToken(username, password);
 

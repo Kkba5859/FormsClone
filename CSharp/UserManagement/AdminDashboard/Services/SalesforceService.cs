@@ -47,23 +47,22 @@ namespace FormsClone.CSharp.UserManagement.AdminDashboard.Services
 
         public async Task<string> GetAccessToken(string username, string password)
         {
-            // Проверьте, содержит ли пароль токен безопасности
             if (string.IsNullOrWhiteSpace(password))
             {
                 throw new ArgumentException("Password cannot be empty.", nameof(password));
             }
 
-            var securityToken = "3Hhee460l6uA7SQ7ASqbhuYCj"; // Убедитесь, что токен правильный и активный
-            var combinedPassword = password + securityToken; // Добавляем токен безопасности к паролю
+            var securityToken = "3Hhee460l6uA7SQ7ASqbhuYCj";
+            var combinedPassword = password + securityToken;
 
             var body = new Dictionary<string, string>
-            {
-                { "grant_type", "password" },
-                { "client_id", ConsumerKey },
-                { "client_secret", ConsumerSecret },
-                { "username", username },
-                { "password", combinedPassword } // Используем комбинированный пароль
-            };
+    {
+        { "grant_type", "password" },
+        { "client_id", ConsumerKey },
+        { "client_secret", ConsumerSecret },
+        { "username", username },
+        { "password", combinedPassword }
+    };
 
             var request = new HttpRequestMessage(HttpMethod.Post, $"flow-ability-1520.my.salesforce.com/services/oauth2/token")
             {
@@ -94,5 +93,6 @@ namespace FormsClone.CSharp.UserManagement.AdminDashboard.Services
                 throw new HttpRequestException($"Error fetching access token: {response.StatusCode}");
             }
         }
+
     }
 }

@@ -13,7 +13,8 @@ using FormsClone.CSharp.UserManagement.Interfaces;
 using FormsClone.CSharp.UserManagement.Login.Services;
 using FormsClone.CSharp.HomePage;
 using FormsClone.CSharp.MainFunctionality.Templates.Services;
-using System.Net.Http; // Подключаем пространство имен для HttpClient
+using System.Net.Http;
+using FormsClone.CSharp.UserManagement.AdminDashboard.Services.FormsClone.CSharp.UserManagement.AdminDashboard.Services;
 
 namespace FormsClone
 {
@@ -44,7 +45,17 @@ namespace FormsClone
             // Регистрируем другие необходимые сервисы для работы приложения
             builder.Services.AddScoped<IHomeService, HomeService>();
             builder.Services.AddScoped<ITabService, TabService>();
+
+            // Добавляем настройки для JiraService
+            builder.Services.Configure<JiraSettings>(options =>
+            {
+                options.EncodedCredentials = "a2tiYTU4NTlAZ21haWwuY29tOkFUQVRUM3hGZkdGMHpjYW1JSktsYWVOTlhQQ3pxLWNIUWM4bm1SN3hGSDFVZENvRnl6RWxmUEI5eDA0UDc3WlppWTdsZG5CbHMtZHpYX3Y3elI3TkQ1d0lCQzgxeVhrZU9yRno4VUlXcXVJUUI4YUxuTjJhN2RiQnIwNUJhRXVmaDhXSTNPZ0xrRjVHeEc0ME91cmZBRlNnRy1hdnVRNmVzVE9uR0JQUkNsaElMbVY5WFB3NEJPQT1BN0M4MUMzMw==";
+                options.JiraDomain = "https://kba5859.atlassian.net";
+            });
+
+            // Регистрация Salesforce и Jira сервисов
             builder.Services.AddScoped<ISalesforceService, SalesforceService>();
+            builder.Services.AddScoped<IJiraService, JiraService>();
 
             await builder.Build().RunAsync();
         }
