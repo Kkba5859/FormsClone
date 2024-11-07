@@ -4,17 +4,36 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormsClone", "FormsClone.csproj", "{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840} = {CABCA5AD-E5A4-4A63-81DF-87B5067B7840}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiraProxyAPI", "..\JiraProxyAPI\JiraProxyAPI.csproj", "{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Debug|x86.Build.0 = Debug|Any CPU
 		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Release|x86.ActiveCfg = Release|x86
+		{3FB8A470-AEAC-46CB-BA99-8A0B429E50EB}.Release|x86.Build.0 = Release|x86
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}.Debug|x86.Build.0 = Debug|Any CPU
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}.Release|x86.ActiveCfg = Release|Any CPU
+		{CABCA5AD-E5A4-4A63-81DF-87B5067B7840}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

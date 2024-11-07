@@ -5,6 +5,7 @@
 @inject IUserService UserService
 @inject ILoginService LoginService
 @inject IJSRuntime JSRuntime
+@inject IUserDashboardService UserDashboardService
 
 <div class="top-row ps-3 navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
@@ -90,6 +91,13 @@
     @Body
 </div>
 
+<div class="text-center mt-4">
+    @if (IsLoggedIn)
+    {
+        <button class="btn btn-primary" @onclick="CreateJiraIssue">Создать тикет в службу поддержки (Jira)</button>
+    }
+</div>
+
 @code {
     protected bool IsLoggedIn;
     protected bool IsAdmin;
@@ -138,5 +146,31 @@
         isDarkTheme = !isDarkTheme;
         await JSRuntime.InvokeVoidAsync("toggleTheme", isDarkTheme);
         await JSRuntime.InvokeVoidAsync("localStorage.setItem", "theme", isDarkTheme ? "dark" : "light");
+    }
+
+    private async Task CreateJiraIssue()
+    {
+        var issueData = new
+        {
+            Summary = "Задача от пользователя",
+            Description = "Описание задачи, созданной из основного меню"
+        };
+
+        try
+        {
+            var ticketLink = await UserDashboardService.CreateJiraIssueAsync(issueData.Summary, issueData.Description);
+            if (!string.IsNullOrEmpty(ticketLink))
+            {
+                Console.WriteLine($"Задача создана. Ссылка на задачу: {ticketLink}");
+            }
+            else
+            {
+                Console.WriteLine("Не удалось получить ссылку на задачу.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Ошибка: " + ex.Message);
+        }
     }
 }

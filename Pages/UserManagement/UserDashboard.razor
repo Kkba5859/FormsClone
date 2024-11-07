@@ -3,19 +3,20 @@
 @using FormsClone.CSharp.UserManagement.AdminDashboard.Services
 @using FormsClone.CSharp.UserManagement.Interfaces
 @using FormsClone.CSharp.UserManagement.AdminDashboard.Models
-@using System.Net.Http.Json;
+@using System.Net.Http.Json
+@using Newtonsoft.Json
+@using System.Text
+@using System.Globalization
+
+
 @inject IUserService UserService
 @inject NavigationManager NavigationManager
 @inject ILoginService LoginService
 @inject ILocalStorageService LocalStorageService
 @inject IJSRuntime JS
-@inject ISalesforceService SalesforceService
-@inject IJiraService JiraService
 @inject HttpClient HttpClient
-@inject HttpClient Http
-
-
-<h3 class="text-center mb-4">Личный кабинет</h3>
+@inject IUserDashboardService UserDashboardService
+@inject IJiraService JiraService
 
 @if (_isLoading)
 {
@@ -25,42 +26,108 @@
 }
 else if (_currentUser != null)
 {
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <tr>
-                <th>Имя пользователя:</th>
-                <td>
-                    <span class="badge bg-secondary">@(_currentUser.Username)</span>
-                </td>
-            </tr>
-            <tr>
-                <th>Администратор:</th>
-                <td>
-                    <span class="badge @(_currentUser.IsAdmin ? "bg-success" : "bg-secondary")">
-                        @(_currentUser.IsAdmin ? "Да" : "Нет")
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <th>Заблокирован:</th>
-                <td>
-                    <span class="badge @(_currentUser.IsBlocked ? "bg-danger" : "bg-primary")">
-                        @(_currentUser.IsBlocked ? "Да" : "Нет")
-                    </span>
-                </td>
-            </tr>
-        </table>
+    <div class="container mt-4">
+        <h3 class="text-center">Личный кабинет</h3>
 
-        <div class="mt-4">
-            <button class="btn btn-warning" @onclick="ShowChangePasswordModal">
-                Сменить пароль
-            </button>
-            <button class="btn btn-danger" @onclick="DeleteAccount">
-                Удалить аккаунт
-            </button>
-            <button class="btn btn-info" @onclick="FetchSalesforceData">Загрузить данные Salesforce</button>
-            <button class="btn btn-primary" @onclick="CreateJiraIssue">Создать задачу в Jira</button>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th>
+                            <span class="badge bg-secondary">Имя пользователя:</span>
+                        </th>
+                        <td>
+                            <span class="badge bg-secondary">@(_currentUser?.Username)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <span class="badge bg-secondary">Администратор:</span>
+                        </th>
+                        <td>
+                            <span class="badge @(_currentUser?.IsAdmin == true ? "bg-success" : "bg-secondary")">
+                                @(_currentUser?.IsAdmin == true ? "Да" : "Нет")
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <span class="badge bg-secondary">Заблокирован:</span>
+                        </th>
+                        <td>
+                            <span class="badge @(_currentUser?.IsBlocked == true ? "bg-danger" : "bg-success")">
+                                @(_currentUser?.IsBlocked == true ? "Да" : "Нет")
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+
+        <div class="text-center mt-4">
+            <button class="btn btn-warning" @onclick="ShowChangePasswordModal">Сменить пароль</button>
+            <button class="btn btn-danger" @onclick="DeleteAccount">Удалить аккаунт</button>
+        </div>
+
+        <h4 class="mt-5">Отправленные задачи</h4>
+
+        @if (_sentIssues.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ключ</th>
+                            <th>Описание</th>
+                            <th>Исполнитель</th>
+                            <th>Создатель</th>
+                            <th>Дата создания</th>
+                            <th>Описание задачи</th>
+                            <th>Ссылка на задачу</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var issue in _sentIssues)
+                        {
+                            <tr>
+                                <td>@issue.Key</td>
+                                <td>@issue.Summary</td>
+                                <td>@(issue.Assignee ?? "Не назначен")</td>
+                                <td>@(issue.Reporter ?? "Не указан")</td>
+                                <td>@issue.Created</td>
+                                <td>@issue.Description</td>
+                                <td>
+                                    <a href="@issue.TicketLink" target="_blank">Перейти к задаче</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p class="text-center">Пока нет отправленных задач.</p>
+        }
+
+
+        <div class="text-center mt-4">
+            <button class="btn btn-primary" @onclick="LoadJiraIssues">Загрузить задачи из Jira</button>
+        </div>
+
+        @if (_jiraLoading)
+        {
+            <div class="text-center">
+                <p class="text-info">Загружаем задачи из Jira...</p>
+            </div>
+        }
+
+        @if (_jiraIssuesLoadingError)
+        {
+            <div class="alert alert-danger text-center" role="alert">
+                Произошла ошибка при загрузке задач из Jira. Попробуйте позже.
+            </div>
+        }
     </div>
 }
 else
@@ -114,6 +181,9 @@ else
     private string _newPassword;
     private string _confirmNewPassword;
     private string _errorMessage;
+    private List<IssueModel> _sentIssues = new List<IssueModel>();
+    private bool _jiraLoading = false;
+    private bool _jiraIssuesLoadingError = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,32 +197,38 @@ else
 
         _isLoading = false;
 
-        // Дополнительная проверка для авторизации
         var isLoggedIn = await LoginService.IsUserLoggedInAsync();
         if (!isLoggedIn)
         {
             NavigationManager.NavigateTo("/login");
             return;
         }
-    }
-    private async Task CreateJiraIssue()
-    {
-        var issueData = new
-        {
-            projectKey = "SCRUM",
-            summary = "Задача от пользователя",
-            description = "Описание задачи, созданной из личного кабинета",
-            issueType = "Task"
-        };
 
-        var response = await HttpClient.PostAsJsonAsync("https://localhost:5001/api/Jira/CreateIssue", issueData); // Замените Http на HttpClient
-        if (response.IsSuccessStatusCode)
+        await LoadJiraIssues(); // Load Jira issues when the page is initialized
+    }
+
+    private async Task LoadJiraIssues()
+    {
+        try
         {
-            Console.WriteLine("Задача успешно создана.");
+            _jiraLoading = true;
+            _jiraIssuesLoadingError = false;
+
+            Console.WriteLine("Загружаем задачи из Jira...");
+
+            // Get Jira issues
+            _sentIssues = await JiraService.GetJiraIssuesAsync();
+
+            Console.WriteLine($"Получено {_sentIssues.Count} задач из Jira");
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine("Ошибка создания задачи.");
+            Console.WriteLine($"Ошибка при загрузке задач: {ex.Message}");
+            _jiraIssuesLoadingError = true;
+        }
+        finally
+        {
+            _jiraLoading = false;
         }
     }
 
@@ -178,7 +254,7 @@ else
             return;
         }
 
-        await UserService.ChangePasswordAsync(_currentUser.Username, _newPassword);
+        await UserDashboardService.ChangePasswordAsync(_currentUser.Username, _newPassword);
         await LocalStorageService.SetItemAsync("currentUser", _currentUser);
         Close();
     }
@@ -188,23 +264,9 @@ else
         var confirmDelete = await JS.InvokeAsync<bool>("confirm", "Вы уверены, что хотите удалить свой аккаунт?");
         if (confirmDelete)
         {
-            await UserService.DeleteUserAsync(_currentUser.Username);
+            await UserDashboardService.DeleteUserAsync(_currentUser.Username);
             await LocalStorageService.RemoveItemAsync("currentUser");
             NavigationManager.NavigateTo("/login");
         }
-    }
-
-    private async Task FetchSalesforceData()
-    {
-        // Для получения токена доступа запрашиваем у пользователя имя пользователя и пароль
-        string username = _currentUser.Username; // Если ваш пользователь уже аутентифицирован
-        string password = "Kkba5859368a"; // Здесь нужно ввести пароль или его получать по-другому, например, из модального окна
-
-        string accessToken = await SalesforceService.GetAccessToken(username, password);
-
-        // Пример запроса к Salesforce
-        string query = "SELECT Id, Name FROM Account LIMIT 10"; // Ваш SOQL запрос
-        var salesforceData = await SalesforceService.GetSalesforceDataAsync(accessToken, query);
-        // Здесь обрабатываем полученные данные, например, отображаем их на странице
     }
 }
